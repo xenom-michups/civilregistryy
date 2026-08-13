@@ -1,33 +1,26 @@
-const fs = require('fs');
-const path = require('path');
 const { Sequelize } = require('sequelize');
 const config = require('../config/database');
 
 const env = process.env.NODE_ENV || 'development';
 const dbConfig = config[env];
 const useLocalStorageMode = !dbConfig || !process.env.DB_HOST || process.env.DB_HOST === 'localhost' || process.env.DB_HOST === '127.0.0.1';
-const storeFile = path.join(__dirname, '..', 'data', 'local-storage.json');
 
-function ensureStoreFile() {
-  const dir = path.dirname(storeFile);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  if (!fs.existsSync(storeFile)) {
-    fs.writeFileSync(storeFile, JSON.stringify({}, null, 2), 'utf8');
-  }
-}
+// In-memory store for Vercel/serverless environments
+const memoryStore = {
+  User: [],
+  Birth: [],
+  Marriage: [],
+  Death: [],
+  ResidencyCertificate: [],
+  CertificateRequest: [],
+};
 
 function readStore() {
-  ensureStoreFile();
-  try {
-    return JSON.parse(fs.readFileSync(storeFile, 'utf8'));
-  } catch (error) {
-    return {};
-  }
+  return memoryStore;
 }
 
 function writeStore(data) {
-  ensureStoreFile();
-  fs.writeFileSync(storeFile, JSON.stringify(data, null, 2), 'utf8');
+  Object.assign(memoryStore, data);
 }
 
 function buildLocalModel(modelName) {
