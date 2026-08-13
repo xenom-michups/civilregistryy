@@ -78,6 +78,35 @@ app.use(
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+const noDatabaseMode = !process.env.DB_HOST || process.env.DB_HOST === 'localhost' || process.env.DB_HOST === '127.0.0.1';
+const dbUnavailableMessage = 'This app is running without a configured database. Add DB_HOST, DB_NAME, DB_USER, and DB_PASSWORD in Vercel/your environment to enable full functionality.';
+
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    database: noDatabaseMode ? 'not-configured' : 'configured',
+    message: noDatabaseMode ? dbUnavailableMessage : 'Database is configured.',
+  });
+});
+
+app.use((req, res, next) => {
+  if (!noDatabaseMode) return next();
+
+  const publicRoutes = ['/', '/login', '/client', '/lookup', '/request-certificate', '/track-request', '/health'];
+  const isPublicRoute = publicRoutes.includes(req.path) || req.path.startsWith('/public') || req.path.startsWith('/images') || req.path.startsWith('/styles') || req.path.startsWith('/js');
+
+  if (isPublicRoute) return next();
+
+  if (req.path.startsWith('/api')) {
+    return res.status(503).json({
+      status: 'degraded',
+      message: dbUnavailableMessage,
+    });
+  }
+
+  return res.status(503).render('error', { message: dbUnavailableMessage });
+});
+
 // Routes
 app.use('/', viewRouter);
 app.use('/api/users', usersRouter);
