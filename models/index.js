@@ -137,7 +137,7 @@ if (useLocalStorageMode) {
     CertificateRequest: buildLocalModel('CertificateRequest'),
   };
 
-  // Initialize demo users if none exist
+  // Initialize demo data if none exist
   (async () => {
     try {
       const existingUsers = await localDb.User.findAll();
@@ -164,9 +164,84 @@ if (useLocalStorageMode) {
         console.log('✅ Demo users initialized');
         console.log('   Admin: admin@demo.com / admin123');
         console.log('   User: user@demo.com / user123');
+
+        // Add sample birth certificates
+        await localDb.Birth.create({
+          givenName: 'John',
+          surname: 'Doe',
+          birthDate: '2020-01-15',
+          gender: 'Male',
+          birthPlace: 'City Hospital',
+          fatherName: 'James Doe',
+          motherName: 'Mary Doe',
+          registrationNumber: 'BR-2020-001',
+          status: 'completed',
+        });
+
+        await localDb.Birth.create({
+          givenName: 'Sarah',
+          surname: 'Smith',
+          birthDate: '2021-06-20',
+          gender: 'Female',
+          birthPlace: 'Central Hospital',
+          fatherName: 'Michael Smith',
+          motherName: 'Jennifer Smith',
+          registrationNumber: 'BR-2021-002',
+          status: 'completed',
+        });
+
+        // Add sample marriages
+        await localDb.Marriage.create({
+          groomName: 'Robert Johnson',
+          brideNam: 'Emily Davis',
+          marriageDate: '2022-05-10',
+          marriagePlace: 'City Hall',
+          registrationNumber: 'MR-2022-001',
+          status: 'completed',
+        });
+
+        // Add sample deaths
+        await localDb.Death.create({
+          deceased: 'William Brown',
+          deathDate: '2023-03-25',
+          deathPlace: 'City Medical Center',
+          causeOfDeath: 'Natural causes',
+          registrationNumber: 'DR-2023-001',
+          status: 'completed',
+        });
+
+        // Add sample residency certificates
+        await localDb.ResidencyCertificate.create({
+          name: 'Patricia Miller',
+          address: '123 Main Street, City',
+          yearsOfResidency: 5,
+          registrationNumber: 'RC-2023-001',
+          status: 'completed',
+        });
+
+        // Add sample certificate requests
+        await localDb.CertificateRequest.create({
+          requestType: 'Birth Certificate',
+          certificateType: 'birth',
+          fullName: 'John Doe',
+          email: 'john@example.com',
+          status: 'pending',
+          priority: 'normal',
+        });
+
+        await localDb.CertificateRequest.create({
+          requestType: 'Marriage Certificate',
+          certificateType: 'marriage',
+          fullName: 'Robert Johnson',
+          email: 'robert@example.com',
+          status: 'approved',
+          priority: 'high',
+        });
+
+        console.log('✅ Demo data initialized with sample records');
       }
     } catch (err) {
-      console.warn('⚠️ Could not initialize demo users:', err.message);
+      console.warn('⚠️ Could not initialize demo data:', err.message);
     }
   })();
 
