@@ -1,0 +1,122 @@
+extends layout
+
+block content
+  .max-w-5xl.mx-auto
+    .flex.items-center.justify-between.mb-8
+      div
+        h2.text-2xl.font-bold Register Death Certificate
+        p.text-dark-400.mt-1 Fill in the details to create a new death certificate
+
+    form#deathForm.space-y-8
+      //- Deceased Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-gray-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-gray-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Deceased Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="deceased_surname") Surname *
+            input#deceased_surname.input(type="text" name="deceased_surname" required)
+          div
+            label.label(for="deceased_givenname") Given Name *
+            input#deceased_givenname.input(type="text" name="deceased_givenname" required)
+          div
+            label.label(for="deceased_sex") Sex *
+            select#deceased_sex.input(name="deceased_sex" required)
+              option(value="") Select sex
+              option(value="male") Male
+              option(value="female") Female
+          div
+            label.label(for="deceased_born_on") Date of Birth *
+            input#deceased_born_on.input(type="date" name="deceased_born_on" required)
+          div
+            label.label(for="deceased_born_at") Place of Birth *
+            input#deceased_born_at.input(type="text" name="deceased_born_at" required)
+          div
+            label.label(for="deceased_nationality") Nationality
+            input#deceased_nationality.input(type="text" name="deceased_nationality" value="Cameroon")
+          div
+            label.label(for="deceased_occupation") Occupation
+            input#deceased_occupation.input(type="text" name="deceased_occupation")
+          div
+            label.label(for="deceased_residence") Last Residence *
+            input#deceased_residence.input(type="text" name="deceased_residence" required)
+          div
+            label.label(for="deceased_id_num") National ID Number
+            input#deceased_id_num.input(type="text" name="deceased_id_num")
+
+      //- Death Details
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-red-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-red-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+          h3.text-lg.font-semibold Death Details
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="death_date") Date of Death *
+            input#death_date.input(type="date" name="death_date" required)
+          div
+            label.label(for="death_time") Time of Death
+            input#death_time.input(type="time" name="death_time")
+          div
+            label.label(for="death_place") Place of Death *
+            input#death_place.input(type="text" name="death_place" required)
+          div
+            label.label(for="cause_of_death") Cause of Death *
+            input#cause_of_death.input(type="text" name="cause_of_death" required)
+
+      //- Family Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z")
+          h3.text-lg.font-semibold Family Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="father_name") Father's Name
+            input#father_name.input(type="text" name="father_name")
+          div
+            label.label(for="mother_name") Mother's Name
+            input#mother_name.input(type="text" name="mother_name")
+          div
+            label.label(for="spouse_name") Spouse's Name
+            input#spouse_name.input(type="text" name="spouse_name")
+
+      //- Declarant Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+          h3.text-lg.font-semibold Declarant Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="declarant_name") Full Name *
+            input#declarant_name.input(type="text" name="declarant_name" required)
+          div
+            label.label(for="declarant_relationship") Relationship to Deceased *
+            input#declarant_relationship.input(type="text" name="declarant_relationship" required)
+          div
+            label.label(for="declarant_id_num") National ID Number *
+            input#declarant_id_num.input(type="text" name="declarant_id_num" required)
+          div
+            label.label(for="declarant_address") Address *
+            input#declarant_address.input(type="text" name="declarant_address" required)
+
+      .flex.items-center.justify-end.gap-4
+        button.btn.btn-secondary(type="reset") Clear Form
+        button.btn.btn-primary.px-8(type="submit")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          span Register Death
+
+block scripts
+  script(src="/js/death-reg.js")

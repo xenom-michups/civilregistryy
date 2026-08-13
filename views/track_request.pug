@@ -1,0 +1,149 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Track Request | Civil Registry System
+    link(rel="stylesheet" href="/styles/tailwind.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet")
+    link(rel="icon" href="/images/Favicon.png" type="image/png")
+
+  body.bg-dark-950.text-white.min-h-screen
+    nav.fixed.top-0.left-0.right-0.z-50.glass.border-b.border-dark-800
+      .max-w-7xl.mx-auto.px-6.py-4
+        .flex.items-center.justify-between
+          a.flex.items-center.gap-3(href="/")
+            .w-10.h-10.bg-primary-600.rounded-xl.flex.items-center.justify-center
+              svg.w-6.h-6.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            span.text-xl.font-bold Civil Registry System
+          .flex.items-center.gap-4
+            a.text-dark-400.text-sm(href="/" class="hover:text-white") Home
+            a.text-dark-400.text-sm(href="/client" class="hover:text-white") Lookup
+            a.text-dark-400.text-sm(href="/request-certificate" class="hover:text-white") Request
+            if user
+              a.btn.btn-secondary(href="/client-dashboard") Dashboard
+              button#logOutBtn.btn.btn-outline Logout
+            else
+              a.btn.btn-primary(href="/login") Login or Register
+
+    .pt-24.pb-16.px-6
+      .max-w-3xl.mx-auto
+        .text-center.mb-12
+          div(class="w-20 h-20 bg-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6")
+            svg.w-10.h-10.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01")
+          h1.text-4xl.font-bold.mb-4 Track Your Request
+          p.text-xl.text-dark-400 Enter your request number or email to check status
+
+        .card.p-8
+          form#trackForm.space-y-6
+            div
+              label.label(for="requestNumber") Request Number
+              input#requestNumber.input(type="text" placeholder="e.g., REQ-2024-000001")
+            .text-center.text-dark-500 OR
+            div
+              label.label(for="email") Email Address
+              input#email.input(type="email" placeholder="Enter your email")
+            button.btn.btn-primary.w-full.py-4(type="submit")
+              svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+              span Track Request
+
+        #results.mt-8.hidden
+          h3.text-xl.font-semibold.mb-6 Your Requests
+          #requestsList
+
+    footer.bg-dark-900.border-t.border-dark-800.py-8.mt-auto
+      .max-w-7xl.mx-auto.px-6.text-center
+        p.text-dark-500.text-sm © #{new Date().getFullYear()} Civil Registry System. All rights reserved.
+
+    script(src="/js/login.js")
+    script.
+      const statusColors = {
+        pending: 'bg-yellow-500/20 text-yellow-400',
+        processing: 'bg-blue-500/20 text-blue-400',
+        approved: 'bg-green-500/20 text-green-400',
+        ready: 'bg-primary-500/20 text-primary-400',
+        rejected: 'bg-red-500/20 text-red-400',
+        collected: 'bg-gray-500/20 text-gray-400',
+      };
+
+      const statusLabels = {
+        pending: 'Pending Review',
+        processing: 'Being Processed',
+        approved: 'Approved',
+        ready: 'Ready for Collection',
+        rejected: 'Rejected',
+        collected: 'Collected',
+      };
+
+      document.getElementById('trackForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const requestNumber = document.getElementById('requestNumber').value;
+        const email = document.getElementById('email').value;
+
+        if (!requestNumber && !email) {
+          alert('Please enter a request number or email');
+          return;
+        }
+
+        const params = new URLSearchParams();
+        if (requestNumber) params.append('requestNumber', requestNumber);
+        if (email) params.append('email', email);
+
+        try {
+          const res = await fetch(`/api/requests/track?${params}`);
+          const data = await res.json();
+
+          const resultsDiv = document.getElementById('results');
+          const listDiv = document.getElementById('requestsList');
+
+          if (data.status === 'success' && data.data?.requests?.length > 0) {
+            resultsDiv.classList.remove('hidden');
+            listDiv.innerHTML = data.data.requests.map(r => `
+              <div class="card p-6 mb-4">
+                <div class="flex items-center justify-between mb-4">
+                  <span class="text-lg font-mono text-primary-500">${r.requestNumber}</span>
+                  <span class="px-3 py-1 text-sm rounded-full ${statusColors[r.status]}">${statusLabels[r.status]}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span class="text-dark-500">Certificate Type:</span>
+                    <span class="text-dark-300 ml-2 capitalize">${r.certificateType}</span>
+                  </div>
+                  <div>
+                    <span class="text-dark-500">Subject:</span>
+                    <span class="text-dark-300 ml-2">${r.subjectName}</span>
+                  </div>
+                  <div>
+                    <span class="text-dark-500">Submitted:</span>
+                    <span class="text-dark-300 ml-2">${new Date(r.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <div>
+                    <span class="text-dark-500">Purpose:</span>
+                    <span class="text-dark-300 ml-2">${r.purpose}</span>
+                  </div>
+                </div>
+                ${r.status === 'rejected' && r.rejectionReason ? `
+                  <div class="mt-4 p-3 bg-red-500/10 rounded-lg">
+                    <span class="text-red-400 text-sm">Rejection Reason: ${r.rejectionReason}</span>
+                  </div>
+                ` : ''}
+                ${r.status === 'ready' ? `
+                  <div class="mt-4 p-3 bg-green-500/10 rounded-lg">
+                    <span class="text-green-400 text-sm">Your certificate is ready! Please visit the municipal office with your ID to collect it.</span>
+                  </div>
+                ` : ''}
+              </div>
+            `).join('');
+          } else {
+            resultsDiv.classList.remove('hidden');
+            listDiv.innerHTML = '<p class="text-dark-400 text-center py-8">No requests found.</p>';
+          }
+        } catch (err) {
+          alert('Error tracking request. Please try again.');
+        }
+      });

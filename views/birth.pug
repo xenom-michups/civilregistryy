@@ -1,3 +1,112 @@
 extends layout
+
 block content
-    include _reg-birth
+  .max-w-5xl.mx-auto
+    //- Header
+    .flex.items-center.justify-between.mb-8
+      div
+        h2.text-2xl.font-bold Register Birth Certificate
+        p.text-dark-400.mt-1 Fill in the details to create a new birth certificate
+
+    //- Form
+    form#birthForm.space-y-8
+      //- Child Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Child Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="surname") Surname *
+            input#surname.input(type="text" name="surname" required placeholder="Enter surname")
+          div
+            label.label(for="givenname") Given Name *
+            input#givenname.input(type="text" name="givenname" required placeholder="Enter given name")
+          div
+            label.label(for="born_at") Place of Birth *
+            input#born_at.input(type="text" name="born_at" required placeholder="Hospital/Location")
+          div
+            label.label(for="born_on") Date of Birth *
+            input#born_on.input(type="date" name="born_on" required)
+          div
+            label.label(for="sex") Sex *
+            select#sex.input(name="sex" required)
+              option(value="") Select sex
+              option(value="male") Male
+              option(value="female") Female
+
+      //- Father Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Father's Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="father_name") Full Name *
+            input#father_name.input(type="text" name="father_name" required placeholder="Father's full name")
+          div
+            label.label(for="father_born_at") Place of Birth *
+            input#father_born_at.input(type="text" name="father_born_at" required placeholder="Place of birth")
+          div
+            label.label(for="father_born_on") Date of Birth *
+            input#father_born_on.input(type="date" name="father_born_on" required)
+          div
+            label.label(for="father_resident_at") Residence *
+            input#father_resident_at.input(type="text" name="father_resident_at" required placeholder="Current residence")
+          div
+            label.label(for="father_occupation") Occupation *
+            input#father_occupation.input(type="text" name="father_occupation" required placeholder="Occupation")
+          div
+            label.label(for="father_nationality") Nationality *
+            input#father_nationality.input(type="text" name="father_nationality" value="Cameroon" required)
+          div
+            label.label(for="father_ref_doc") National ID Number *
+            input#father_ref_doc.input(type="text" name="father_ref_doc" required placeholder="ID number")
+
+      //- Mother Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-pink-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Mother's Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="mother_name") Full Name *
+            input#mother_name.input(type="text" name="mother_name" required placeholder="Mother's full name")
+          div
+            label.label(for="mother_born_at") Place of Birth *
+            input#mother_born_at.input(type="text" name="mother_born_at" required placeholder="Place of birth")
+          div
+            label.label(for="mother_born_on") Date of Birth *
+            input#mother_born_on.input(type="date" name="mother_born_on" required)
+          div
+            label.label(for="mother_resident_at") Residence *
+            input#mother_resident_at.input(type="text" name="mother_resident_at" required placeholder="Current residence")
+          div
+            label.label(for="mother_occupation") Occupation
+            input#mother_occupation.input(type="text" name="mother_occupation" placeholder="Occupation")
+          div
+            label.label(for="mother_nationality") Nationality *
+            input#mother_nationality.input(type="text" name="mother_nationality" value="Cameroon" required)
+          div
+            label.label(for="mother_ref_doc") National ID Number *
+            input#mother_ref_doc.input(type="text" name="mother_ref_doc" required placeholder="ID number")
+
+      //- Submit
+      .flex.items-center.justify-end.gap-4
+        button.btn.btn-secondary(type="reset") Clear Form
+        button.btn.btn-primary.px-8(type="submit")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          span Register Birth
+
+block scripts
+  script(src="/js/birth-reg.js")

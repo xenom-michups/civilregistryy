@@ -1,122 +1,111 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(http-equiv='X-UA-Compatible' content='IE=edge')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Document
-  link(rel='icon' href='' type='image/png')
-  link(rel='stylesheet' href='styles/tailwind.css')
-.flex.flex-col.h-screen.mx-auto(class='w-5/6')
-  .grid.grid-cols-2.justify-between.items-center.space-x-2.h-64
-    .flex.flex-col.h-full.items-center.p-6.text-l.space-y-2
-      .flex.flex-col.items-center
-        p PROVINCE
-        .border-b-4.border-dotted.border-gray-800.px-2
-          p.text-3xl North West
-      .flex.flex-col.items-center
-        p DEPARTMENT
-        .border-b-4.border-dotted.border-gray-800.px-10
-          p.text-3xl Mezam
-      .flex.flex-col.items-center
-        p SUBDIVISION
-        .border-b-4.border-dotted.border-gray-800.px-12
-          p.text-3xl Santa
-    .flex.flex-col.items-center.h-full.p-6.text-xl
-      .flex.flex-col.items-center
-        p.uppercase.font-semibold Republic of Cameroon
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    title Birth Certificate - Print
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Times New Roman', serif; padding: 40px; background: white; color: #1a1a1a; }
+      .certificate { max-width: 800px; margin: 0 auto; border: 3px double #166534; padding: 40px; }
+      .header { text-align: center; border-bottom: 2px solid #166534; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+      .header h2 { font-size: 20px; color: #166534; margin-top: 15px; }
+      .header p { font-size: 12px; color: #666; }
+      .seals { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
+      .seals img { width: 60px; height: 60px; }
+      .section { margin-bottom: 25px; }
+      .section-title { font-size: 14px; font-weight: bold; color: #166534; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .field { margin-bottom: 10px; }
+      .field-label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+      .field-value { font-size: 14px; font-weight: 500; }
+      .footer { border-top: 2px solid #166534; padding-top: 20px; margin-top: 30px; display: flex; justify-content: space-between; }
+      .signature { text-align: right; }
+      .signature-line { border-top: 1px solid #333; width: 200px; margin-top: 50px; padding-top: 5px; }
+      @media print { body { padding: 0; } .certificate { border: none; } }
+
+  body
+    .certificate
+      .header
+        .seals
+          img(src="/images/stamp1.png" alt="Seal")
+          img(src="/images/stamp2.png" alt="Seal")
+        h1 REPUBLIC OF CAMEROON
         p Peace - Work - Fatherland
-      div
-        img.h-40.w-40(src='images/stamp1.png' alt='stamp')
-  .space-y-4
-    .flex.flex-col.items-center.space-y-2
-      h3.text-xl.font-semibold CIVIL STATUS REGISTRATION CENTRE
-      p
-        | of 
-        span.pl-4.text-3xl.border-b-4.border-dotted.border-gray-800 Santa Rurul Council
-    .flex.flex-row.justify-center.space-x-12
-      .text-3xl
-        h2.font-semibold BIRTH CERTIFICATE
-      div
-        p
-          | No 
-          span.pl-4.border-b-4.border-dotted.border-gray-800.text-2xl 786/98
-  .grid.grid-cols-2.items-center.pb-8
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Name of the child
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.fullName
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold On The
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.born_on.toDateString()
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Was born at
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.born_at
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Sex
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.sex
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Of
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-dotted.border-b-4.border-gray-800
-      p=birth.father_name
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Born AT
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.father_born_at
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Resident at
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.father_resident_at
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Occupation
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.father_occupation
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold And of
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.mother_name
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Born AT
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.mother_born_at
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold On the
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.mother_born_on.toDateString()
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Resident at
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.mother_resident_at
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Occupation
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p=birth.mother_occupation
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Drawn up on the
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p
-        | Certificate of 
-        span=birth.drawn_up_on.toDateString()
-    .ml-20.col-span-2.flex.flex-col.h-8.p-6.text-l.text-xl.my-4
-      p.font-semibold.text-2xl Who attested to the truth of this declaration,
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Officer
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p Martin Foumbam
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold By Us, Civil Status Registrar for
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p Santa Rural Council
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold In the presence of 
-    .text-3xl.flex.flex-col.justify-center.h-8.border-dotted.border-b-4.border-gray-800
-      p Nda Mobang
-    .ml-20.flex.flex-col.h-8.p-6.text-l.text-xl
-      p.font-semibold Civil Status Registrar
-      img.mx-auto.flex.justify-center.h-40.w-40(src='images/stamp1.png' alt='stamp')
-      p.flex.justify-center Secretary Stamp
-    .text-3xl.flex.flex-col.h-8.pt-12
-      img.h-40.w-40.mx-auto(src='images/stamp2.png' alt='stamp-2')
-      p.flex.justify-center.text-xl Civil Status Registrar Stamp
+        h2 BIRTH CERTIFICATE
+        if birth && birth.certificateNumber
+          p Certificate No: #{birth.certificateNumber}
+
+      if birth
+        .section
+          .section-title Child Information
+          .grid
+            .field
+              .field-label Full Name
+              .field-value= birth.givenname + ' ' + birth.surname
+            .field
+              .field-label Date of Birth
+              .field-value= birth.bornOn ? new Date(birth.bornOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .field
+              .field-label Place of Birth
+              .field-value= birth.bornAt
+            .field
+              .field-label Sex
+              .field-value= birth.sex
+
+        .section
+          .section-title Father's Information
+          .grid
+            .field
+              .field-label Full Name
+              .field-value= birth.fatherName
+            .field
+              .field-label Date of Birth
+              .field-value= birth.fatherBornOn ? new Date(birth.fatherBornOn).toLocaleDateString() : '-'
+            .field
+              .field-label Place of Birth
+              .field-value= birth.fatherBornAt
+            .field
+              .field-label Residence
+              .field-value= birth.fatherResidentAt
+            .field
+              .field-label Occupation
+              .field-value= birth.fatherOccupation
+            .field
+              .field-label Nationality
+              .field-value= birth.fatherNationality
+            .field
+              .field-label National ID
+              .field-value= birth.fatherRefDoc
+
+        .section
+          .section-title Mother's Information
+          .grid
+            .field
+              .field-label Full Name
+              .field-value= birth.motherName
+            .field
+              .field-label Date of Birth
+              .field-value= birth.motherBornOn ? new Date(birth.motherBornOn).toLocaleDateString() : '-'
+            .field
+              .field-label Place of Birth
+              .field-value= birth.motherBornAt
+            .field
+              .field-label Residence
+              .field-value= birth.motherResidentAt
+            .field
+              .field-label Occupation
+              .field-value= birth.motherOccupation || 'N/A'
+            .field
+              .field-label Nationality
+              .field-value= birth.motherNationality
+            .field
+              .field-label National ID
+              .field-value= birth.motherRefDoc
+
+        .footer
+          .field
+            .field-label Drawn Up On
+            .field-value= birth.drawnUpOn ? new Date(birth.drawnUpOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+          .signature
+            .signature-line Civil Registry Officer

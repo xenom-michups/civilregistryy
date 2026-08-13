@@ -1,109 +1,183 @@
-const Birth = require('../models/birthModel');
-const APIFeatures = require('../utils/apiFeatures');
+const { Birth } = require('../models');
+const { Op } = require('sequelize');
 
-// Display list of all Birth Certificates
 exports.getAllBirthCert = async (req, res) => {
   try {
-    //  EXECUTE QUERY
-    const features = new APIFeatures(Birth.find(), req.query)
-      .filter()
-      .sort()
-      .fieldLimiting()
-      .paginate();
+    const { page = 1, limit = 10, search, sort = 'createdAt', order = 'DESC' } = req.query;
+    const offset = (page - 1) * limit;
 
-    const birth = await features.query;
+    const whereClause = {};
+    if (search) {
+      whereClause[Op.or] = [
+        { surname: { [Op.like]: `%${search}%` } },
+        { givenname: { [Op.like]: `%${search}%` } },
+        { certificateNumber: { [Op.like]: `%${search}%` } },
+      ];
+    }
 
-    // SEND RESPONSE
-    res.status(200).json({
-      status: 'success',
-      length: birth.length,
-      data: {
-        birth,
-      },
+    const { count, rows: births } = await Birth.findAndCountAll({
+      where: whereClause,
+      order: [[sort, order]],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
     });
 
-    res.locals.birth = birth;
+    res.status(200).json({
+      status: 'success',
+      results: births.length,
+      total: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: parseInt(page),
+      data: { births },
+    });
   } catch (err) {
     res.status(400).json({
       status: 'failed',
-      message: err,
+      message: err.message,
     });
   }
 };
 
-// Display detail page for sepicifc Birth Certificate
 exports.getBirthCert = async (req, res) => {
   try {
-    const birth = await Birth.findById(req.params.id);
-    if (birth != null) {
-      res.status(200).json({
-        status: 'Success',
-        data: {
-          birth,
-        },
+    const birth = await Birth.findByPk(req.params.id);
+
+    if (!birth) {
+      return res.status(404).json({
+        status: 'failed',
+        message: 'Birth certificate not found',
       });
     }
+
+    res.status(200).json({
+      status: 'success',
+      data: { birth },
+    });
   } catch (err) {
     res.status(400).json({
-      status: 'Failed',
-      message: err,
+      status: 'failed',
+      message: err.message,
     });
   }
 };
 
-// Delete specific Birth Certificate
+exports.createBirthCert = async (req, res) => {
+  try {
+    // Map snake_case form fields to camelCase model fields
+    const birthData = {
+      surname: req.body.surname,
+      givenname: req.body.givenname,
+      bornAt: req.body.born_at,
+      bornOn: req.body.born_on,
+      sex: req.body.sex,
+      fatherName: req.body.father_name,
+      fatherBornAt: req.body.father_born_at,
+      fatherBornOn: req.body.father_born_on,
+      fatherResidentAt: req.body.father_resident_at,
+      fatherOccupation: req.body.father_occupation,
+      fatherNationality: req.body.father_nationality || 'Cameroon',
+      fatherRefDoc: req.body.father_ref_doc,
+      motherName: req.body.mother_name,
+      motherBornAt: req.body.mother_born_at,
+      motherBornOn: req.body.mother_born_on,
+      motherResidentAt: req.body.mother_resident_at,
+      motherOccupation: req.body.mother_occupation,
+      motherNationality: req.body.mother_nationality || 'Cameroon',
+      motherRefDoc: req.body.mother_ref_doc,
+    };
+
+    const birth = await Birth.create(birthData);
+
+    res.status(201).json({
+      status: 'success',
+      data: { birth },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+};
+
+exports.updateBirthCert = async (req, res) => {
+  try {
+    const birth = await Birth.findByPk(req.params.id);
+
+    if (!birth) {
+      return res.status(404).json({
+        status: 'failed',
+        message: 'Birth certificate not found',
+      });
+    }
+
+    await birth.update(req.body);
+
+    res.status(200).json({
+      status: 'success',
+      data: { birth },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+};
+
 exports.deleteBirthCert = async (req, res) => {
   try {
-    await Birth.findByIdAndDelete(req.params.id);
+    const birth = await Birth.findByPk(req.params.id);
+
+    if (!birth) {
+      return res.status(404).json({
+        status: 'failed',
+        message: 'Birth certificate not found',
+      });
+    }
+
+    await birth.destroy();
+
     res.status(204).json({
-      status: 'Success',
+      status: 'success',
       data: null,
     });
   } catch (err) {
     res.status(400).json({
       status: 'failed',
-      message: err,
+      message: err.message,
     });
   }
 };
 
-// Create Birth Certificate on POST
-exports.createBirthCert = async (req, res) => {
+exports.getStats = async (req, res) => {
   try {
-    const newBirth = await Birth.create(req.body);
+    const totalBirths = await Birth.count();
+    const maleCount = await Birth.count({ where: { sex: 'male' } });
+    const femaleCount = await Birth.count({ where: { sex: 'female' } });
 
-    res.status(201).json({
-      status: 'Success',
+    const currentYear = new Date().getFullYear();
+    const thisYearBirths = await Birth.count({
+      where: {
+        createdAt: {
+          [Op.gte]: new Date(`${currentYear}-01-01`),
+        },
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
       data: {
-        newBirth,
+        total: totalBirths,
+        male: maleCount,
+        female: femaleCount,
+        thisYear: thisYearBirths,
       },
     });
   } catch (err) {
     res.status(400).json({
       status: 'failed',
-      message: err,
-    });
-  }
-};
-
-// Update specific birth certificate
-exports.updateBirthCert = async (req, res) => {
-  try {
-    const birth = await Birth.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    res.status(201).json({
-      status: 'Success',
-      updated: {
-        birth,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: 'failed',
-      message: err,
+      message: err.message,
     });
   }
 };

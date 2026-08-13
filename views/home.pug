@@ -1,69 +1,284 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  link(rel='stylesheet' href='styles/tailwind.css')
-  title=title
-  link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap' rel='stylesheet')
-  // Favicon
-  link(rel='icon' href='images/Favicon.png' type='image/png')
-.flex.h-screen.bg-gray-800
-  .flex.flex-col.flex-1.w-full
-    // Header ===========================
-    header.z-40.py-4.bg-gray-800.shadow-lg
-      .flex.items-center.justify-between.h-8.px-6.mx-auto
-        .relative.flex.items-center.mt-.mr-4.space-x-6
-          .flex.text-white.flex-shrink-0
-            a.flex.p-2(href='/')
-              .flex.py-3.px-2.items-center
-                p.text-2xl.text-green-500.font-semibold.border-r-2.pr-1.mr-1 CRS
-                p
-                  | CIVIL REGISTRY
-          //
-            Search Input ============================================================
-            ========
-          .relative.flex.w-full.flex-wrap.items-stretch.mb-3.items-center.pt-2.invisible(class='sm:visible')
-            input.form-input.px-3.py-2.placeholder-gray-400.text-gray-700.relative.bg-white.rounded-lg.text-sm.shadow.outline-none.w-full.pr-10(type='search' placeholder='Search'  class='focus:outline-none focus:ring-2 focus:ring-green-500')
-            span.z-10.h-full.leading-snug.font-normal.text-center.text-gray-400.absolute.bg-transparent.rounded.text-base.items-center.justify-center.w-8.right-0.pr-3.py-3
-              svg.h-5.w-5.-mt-1(xmlns='http://www.w3.org/2000/svg' fill='none' viewbox='0 0 24 24' stroke='currentColor')
-              path(stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z')
-        if user
-          ul.flex.items-center.flex-shrink-0.space-x-10
-            // Notifications menu
-            // On login
-            li.relative
-                .p-2.text-white.align-middle.w-20.items-center.text-sm.pr-16(class='hover:text-green-400'  aria-label='Account' aria-haspopup='true')
-                  .font-semibold
-                    a(href='/dashboard') DASHBOARD 
-            li.relative
-              div.align-middle( @click='toggleNotificationsMenu' @keydown.escape='closeNotificationsMenu' aria-label='Notifications' aria-haspopup='true')
-                .flex.items-cemter
-                  img.h-12.w-12.rounded-full.object-cover.border-4.border-green-400(src='../images/profile.jpeg' class='transition duration-500 ease-in-out hover:border-transparent')
-                // Notification badge
-                span.absolute.top-0.right-0.inline-block.w-3.h-3.transform.translate-x-1.-translate-y-1.bg-red-600.border-2.border-white.rounded-full(aria-hidden='true' class='dark:border-gray-800')
-              template(x-if='isNotificationsMenuOpen')
-                ul.absolute.right-0.w-56.p-2.mt-2.space-y-2.text-gray-600.bg-green-400.border.border-green-500.rounded-md.shadow-md(x-transition:leave='transition ease-in duration-150' x-transition:leave-start='opacity-100' x-transition:leave-end='opacity-0' @click.away='closeNotificationsMenu' @keydown.escape='closeNotificationsMenu')
-                  li.flex
-                    a.text-white.inline-flex.items-center.justify-between.w-full.px-2.py-1.text-sm.font-semibold.transition-colors.duration-150.rounded-md(class='hover:bg-gray-100 hover:text-gray-800' href='#')
-                      span Messages
-                      span.inline-flex.items-center.justify-center.px-2.py-1.text-xs.font-bold.leading-none.text-red-600.bg-red-100.rounded-full(class='dark:text-red-100 dark:bg-red-600')
-                        | 13
-            // Profile menu
-            
-            li#btnOut.relative
-              button#logOutBtn.text-sm.font-semibold.p-2.bg-green-600.text-white.align-middle.rounded-xl.w-20.items-center(class='transition duration-500 ease-in-out hover:text-white hover:bg-green-500 focus:outline-none'   aria-label='Account' aria-haspopup='true') Log Out
-                 
-                  
-        else 
-          ul.flex.items-center.flex-shrink-0.space-x-10
-            li.relative
-              button.p-2.bg-green-500.text-white.align-middle.rounded-xl.w-20.items-center(class='hover:text-white hover:bg-green-600 focus:outline-none' @click='toggleProfileMenu' @keydown.escape='closeProfileMenu' aria-label='Account' aria-haspopup='true')
-                .font-semibold
-                  a(href='/login') Login
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Civil Registry System - Modern Certificate Management
+    link(rel="stylesheet" href="/styles/tailwind.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet")
+    link(rel="icon" href="/images/Favicon.png" type="image/png")
+
+  body.bg-dark-950.text-white.min-h-screen
+    //- Navigation
+    nav.fixed.top-0.left-0.right-0.z-50.glass.border-b.border-dark-800
+      .max-w-7xl.mx-auto.px-6.py-4
+        .flex.items-center.justify-between
+          a.flex.items-center.gap-3(href="/")
+            .w-10.h-10.bg-primary-600.rounded-xl.flex.items-center.justify-center
+              svg.w-6.h-6.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            span.text-xl.font-bold Civil Registry System
+
+          .flex.items-center.gap-4
+            a.text-dark-400.text-sm.hidden(href="/client" class="hover:text-white md:block") Certificate Lookup
+            a.text-dark-400.text-sm.hidden(href="/request-certificate" class="hover:text-white md:block") Request Online
+            a.text-dark-400.text-sm.hidden(href="/track-request" class="hover:text-white md:block") Track Request
+            if user
+              if user.role === 'client'
+                a.btn.btn-secondary(href="/client-dashboard") Dashboard
+              else if user.role === 'admin'
+                a.btn.btn-secondary(href="/admin") Dashboard
+              else
+                a.btn.btn-secondary(href="/dashboard") Dashboard
+              button#logOutBtn.btn.btn-outline Logout
+            else
+              a.btn.btn-primary(href="/login") Login or Register
+
+    //- Hero Section
+    section.relative.min-h-screen.flex.items-center.pt-20
+      .absolute.inset-0.bg-gradient-to-br.from-dark-950.via-dark-900.to-primary-900.opacity-50
+      .absolute.inset-0
+        div(class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600 rounded-full filter blur-3xl opacity-20 animate-pulse")
+        div(class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-400 rounded-full filter blur-3xl opacity-10 animate-pulse")
+
+      .relative.max-w-7xl.mx-auto.px-6.py-20
+        div(class="grid gap-12 items-center lg:grid-cols-2")
+          .space-y-8
+            div(class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600/20 rounded-full border border-primary-500/30")
+              span.w-2.h-2.bg-primary-500.rounded-full.animate-pulse
+              span.text-sm.text-primary-400 Modern Certificate Management
+
+            h1.text-5xl.font-bold.leading-tight(class="lg:text-6xl")
+              | Streamline Your 
+              span.gradient-text Civil Registry
+              |  Operations
+
+            p.text-xl.text-dark-300.leading-relaxed
+              | A comprehensive digital solution for managing birth, death, marriage, and residency certificates. 
+              | Secure, efficient, and designed for modern government operations.
+
+            .flex.flex-wrap.gap-4
+              a.btn.btn-primary.px-8.py-4.text-base(href="/request-certificate")
+                span Request Certificate
+                svg.w-5.h-5.ml-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6")
+              a.btn.btn-outline.px-8.py-4.text-base(href="/client")
+                svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+                span Lookup Certificate
+
+            //- Stats
+            .grid.grid-cols-4.gap-6.pt-8.border-t.border-dark-800
+              .text-center
+                .text-2xl.font-bold.text-blue-500#birthCount 0
+                .text-xs.text-dark-400 Births
+              .text-center
+                .text-2xl.font-bold.text-gray-500#deathCount 0
+                .text-xs.text-dark-400 Deaths
+              .text-center
+                .text-2xl.font-bold.text-pink-500#marriageCount 0
+                .text-xs.text-dark-400 Marriages
+              .text-center
+                .text-2xl.font-bold.text-green-500#residencyCount 0
+                .text-xs.text-dark-400 Residency
+
+          .relative.hidden(class="lg:block")
+            div(class="absolute inset-0 bg-gradient-to-r from-primary-600/20 to-transparent rounded-3xl blur-3xl")
+            img.relative.rounded-3xl.shadow-2xl.border.border-dark-700(src="/images/undraw_secure_login_pdn4.svg" alt="Secure Login")
+
+    //- Services Section
+    section#services.py-24.bg-dark-900
+      .max-w-7xl.mx-auto.px-6
+        .text-center.mb-16
+          h2.text-4xl.font-bold.mb-4 Our Services
+          p.text-xl.text-dark-400 Complete civil registry services for citizens
+
+        div(class="grid gap-6 md:grid-cols-2 lg:grid-cols-4")
+          //- Birth Certificate
+          a.card.p-6.text-center.transition-all.duration-300(href="/request-certificate" class="hover:border-blue-500/50 hover:shadow-blue-500/10 hover:shadow-xl")
+            div(class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4")
+              svg.w-8.h-8.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+            h3.text-lg.font-semibold.mb-2 Birth Certificate
+            p.text-dark-400.text-sm Register births and obtain official birth certificates
+
+          //- Death Certificate
+          a.card.p-6.text-center.transition-all.duration-300(href="/request-certificate" class="hover:border-gray-500/50 hover:shadow-gray-500/10 hover:shadow-xl")
+            div(class="w-16 h-16 bg-gray-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4")
+              svg.w-8.h-8.text-gray-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+            h3.text-lg.font-semibold.mb-2 Death Certificate
+            p.text-dark-400.text-sm Register deaths and obtain official death certificates
+
+          //- Marriage Certificate
+          a.card.p-6.text-center.transition-all.duration-300(href="/request-certificate" class="hover:border-pink-500/50 hover:shadow-pink-500/10 hover:shadow-xl")
+            div(class="w-16 h-16 bg-pink-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4")
+              svg.w-8.h-8.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+            h3.text-lg.font-semibold.mb-2 Marriage Certificate
+            p.text-dark-400.text-sm Register marriages and obtain official certificates
+
+          //- Residency Certificate
+          a.card.p-6.text-center.transition-all.duration-300(href="/request-certificate" class="hover:border-green-500/50 hover:shadow-green-500/10 hover:shadow-xl")
+            div(class="w-16 h-16 bg-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4")
+              svg.w-8.h-8.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+            h3.text-lg.font-semibold.mb-2 Residency Certificate
+            p.text-dark-400.text-sm Obtain proof of residence for official purposes
+
+    //- How It Works Section
+    section.py-24.bg-dark-950
+      .max-w-7xl.mx-auto.px-6
+        .text-center.mb-16
+          h2.text-4xl.font-bold.mb-4 How It Works
+          p.text-xl.text-dark-400 Simple steps to request your certificate online
+
+        div(class="grid gap-8 md:grid-cols-4")
+          .text-center
+            .w-16.h-16.bg-primary-600.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
+              span.text-2xl.font-bold 1
+            h3.text-lg.font-semibold.mb-2 Choose Certificate
+            p.text-dark-400.text-sm Select the type of certificate you need
+
+          .text-center
+            .w-16.h-16.bg-primary-600.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
+              span.text-2xl.font-bold 2
+            h3.text-lg.font-semibold.mb-2 Fill Application
+            p.text-dark-400.text-sm Complete the online application form
+
+          .text-center
+            .w-16.h-16.bg-primary-600.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
+              span.text-2xl.font-bold 3
+            h3.text-lg.font-semibold.mb-2 Track Status
+            p.text-dark-400.text-sm Monitor your request status online
+
+          .text-center
+            .w-16.h-16.bg-primary-600.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
+              span.text-2xl.font-bold 4
+            h3.text-lg.font-semibold.mb-2 Collect Certificate
+            p.text-dark-400.text-sm Pick up your certificate when ready
+
+    //- Features Section
+    section#features.py-24.bg-dark-900
+      .max-w-7xl.mx-auto.px-6
+        .text-center.mb-16
+          h2.text-4xl.font-bold.mb-4 Platform Features
+          p.text-xl.text-dark-400 Everything you need for efficient certificate management
+
+        div(class="grid gap-8 md:grid-cols-2 lg:grid-cols-3")
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            h3.text-xl.font-semibold.mb-3 Digital Certificates
+            p.text-dark-400 Generate and manage all types of civil certificates digitally with automatic numbering.
+
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z")
+            h3.text-xl.font-semibold.mb-3 Secure & Compliant
+            p.text-dark-400 Enterprise-grade security with role-based access control and audit trails.
+
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01")
+            h3.text-xl.font-semibold.mb-3 Online Requests
+            p.text-dark-400 Citizens can request certificates online and track their application status.
+
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z")
+            h3.text-xl.font-semibold.mb-3 Print & Download
+            p.text-dark-400 Generate print-ready certificates with official formatting and signatures.
+
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z")
+            h3.text-xl.font-semibold.mb-3 Analytics Dashboard
+            p.text-dark-400 Real-time insights and statistics on certificate registrations and trends.
+
+          div(class="card p-8 transition-all duration-300 hover:border-primary-500/50")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mb-6")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+            h3.text-xl.font-semibold.mb-3 Quick Search
+            p.text-dark-400 Find any certificate instantly with powerful search and filtering capabilities.
+
+    //- CTA Section
+    section.py-24.bg-gradient-to-r.from-primary-900.to-primary-700
+      .max-w-4xl.mx-auto.px-6.text-center
+        h2.text-4xl.font-bold.mb-4 Ready to Get Started?
+        p.text-xl.text-primary-100.mb-8 Request your certificate online today or visit our office for assistance.
+        .flex.flex-wrap.justify-center.gap-4
+          a.btn.bg-white.text-primary-700.px-8.py-4.text-base(href="/request-certificate" class="hover:bg-primary-50")
+            span Request Certificate
+          a.btn.btn-outline.border-white.text-white.px-8.py-4.text-base(href="/track-request" class="hover:bg-white/10")
+            span Track Your Request
+
+    //- Footer
+    footer.bg-dark-950.border-t.border-dark-800.py-12
+      .max-w-7xl.mx-auto.px-6
+        .grid.gap-8.mb-8(class="md:grid-cols-4")
+          div
+            .flex.items-center.gap-3.mb-4
+              .w-8.h-8.bg-primary-600.rounded-lg.flex.items-center.justify-center
+                svg.w-5.h-5.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+              span.font-semibold Civil Registry System
+            p.text-dark-400.text-sm Modern certificate management for government operations.
+
+          div
+            h4.font-semibold.mb-4 Services
+            ul.space-y-2.text-dark-400.text-sm
+              li: a(href="/request-certificate" class="hover:text-white") Birth Certificate
+              li: a(href="/request-certificate" class="hover:text-white") Death Certificate
+              li: a(href="/request-certificate" class="hover:text-white") Marriage Certificate
+              li: a(href="/request-certificate" class="hover:text-white") Residency Certificate
+
+          div
+            h4.font-semibold.mb-4 Quick Links
+            ul.space-y-2.text-dark-400.text-sm
+              li: a(href="/client" class="hover:text-white") Certificate Lookup
+              li: a(href="/track-request" class="hover:text-white") Track Request
+              li: a(href="/login" class="hover:text-white") Staff Login
+
+          div
+            h4.font-semibold.mb-4 Contact
+            ul.space-y-2.text-dark-400.text-sm
+              li Municipal Office
+              li Mon-Fri: 8:00 AM - 5:00 PM
+              li contact@civilregistry.gov
+
+        .pt-8.border-t.border-dark-800.text-center
+          p.text-dark-500.text-sm © #{new Date().getFullYear()} Civil Registry System. All rights reserved.
+
+    script(src="/js/login.js")
+    script.
+      async function loadStats() {
+        try {
+          const [birthRes, deathRes, marriageRes, residencyRes] = await Promise.all([
+            fetch('/api/public/stats/birth'),
+            fetch('/api/public/stats/death'),
+            fetch('/api/public/stats/marriage'),
+            fetch('/api/public/stats/residency')
+          ]);
+          const birthData = await birthRes.json();
+          const deathData = await deathRes.json();
+          const marriageData = await marriageRes.json();
+          const residencyData = await residencyRes.json();
           
-
-
-    // HERO -------------------------------------------
-    block content
-      include _hero
-//- script(src="js/login.js")
+          document.getElementById('birthCount').textContent = (birthData.data?.total || 0).toLocaleString();
+          document.getElementById('deathCount').textContent = (deathData.data?.total || 0).toLocaleString();
+          document.getElementById('marriageCount').textContent = (marriageData.data?.total || 0).toLocaleString();
+          document.getElementById('residencyCount').textContent = (residencyData.data?.total || 0).toLocaleString();
+        } catch (err) {
+          console.log('Could not load stats');
+        }
+      }
+      loadStats();

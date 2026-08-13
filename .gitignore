@@ -1,2 +1,38 @@
-node_modules
+# Dependencies
+node_modules/
+
+# Environment
 config.env
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+
+# Generated files
+birth-certificate.pdf
+marriage-certificate.pdf
+
+# Test
+coverage/
+
+# Misc
+*.zip
+*.tar.gz

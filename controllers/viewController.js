@@ -1,289 +1,408 @@
-const births = require('../models/birthModel')
-const marriages = require('../models/marriageModel')
+const { Birth, Marriage, Death, ResidencyCertificate, CertificateRequest, User } = require('../models');
 const puppeteer = require('puppeteer');
 const path = require('path');
 
-// Renders the dashboard view
-exports.dashboard =  async(req, res) => {
-  try {
-    const birth  = await births.find()
-    const marriage  = await marriages.find();
-    
-   
-    // caculations for the statistics page
-    const total = birth.length + marriage.length;
-    const birthPercentage = ((birth.length / total) * 100).toFixed(1);
-    const marriagePercentage = ((marriage.length / total) * 100).toFixed(1);
+exports.home = (req, res) => {
+  res.status(200).render('home', { title: 'Civil Registry System' });
+};
 
+exports.login = (req, res) => {
+  res.status(200).render('login', { title: 'Login' });
+};
+
+exports.client = (req, res) => {
+  res.status(200).render('client', { title: 'Certificate Lookup' });
+};
+
+exports.dashboard = async (req, res) => {
+  try {
+    const births = await Birth.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+    const marriages = await Marriage.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+    const deaths = await Death.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+    const residencies = await ResidencyCertificate.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+    const requests = await CertificateRequest.findAll({ order: [['createdAt', 'DESC']], limit: 10 });
+
+    const totalBirths = await Birth.count();
+    const totalMarriages = await Marriage.count();
+    const totalDeaths = await Death.count();
+    const totalResidencies = await ResidencyCertificate.count();
+    const totalRequests = await CertificateRequest.count();
+    const pendingRequests = await CertificateRequest.count({ where: { status: 'pending' } });
+
+    const total = totalBirths + totalMarriages + totalDeaths + totalResidencies;
+
+    const birthPercentage = total > 0 ? ((totalBirths / total) * 100).toFixed(1) : 0;
+    const marriagePercentage = total > 0 ? ((totalMarriages / total) * 100).toFixed(1) : 0;
+    const deathPercentage = total > 0 ? ((totalDeaths / total) * 100).toFixed(1) : 0;
+    const residencyPercentage = total > 0 ? ((totalResidencies / total) * 100).toFixed(1) : 0;
 
     res.status(200).render('dashboard', {
       title: 'Dashboard',
-      birth,
-      marriage,
+      birth: births,
+      marriage: marriages,
+      death: deaths,
+      residency: residencies,
+      requests,
+      totalBirths,
+      totalMarriages,
+      totalDeaths,
+      totalResidencies,
+      totalRequests,
+      pendingRequests,
+      birthPercentage,
       marriagePercentage,
-      birthPercentage
-    })
-  } catch(err) {
-    res.status(200).res.json({
-      status: 'Failed',
-      message: err
-    })
-  }
-
- 
-
-}
-
-// Renders the create birth view
-exports.birth =  (req, res) => {
-    res.status(200).render('birth', {
-      title: 'Birth'
-    }) 
-  }
-
-  // Renders the create marriage view
-exports.marriage = (req, res) => {
-    res.status(200).render('marriage', {
-      title: 'Marriage'
-    })
-  }
-
-  // Renders the upload view
-exports.upload = (req, res) => {
-    res.status(200).render('upload', {
-      title: 'CSV'
-    })
-  }
-
-  // Renders the home view 
-exports.home = (req, res) => {
-  res.status(200).render('home', {
-          title: 'CRS' 
-      });
-}
-
-  // Renders the login view
-exports.login = (req, res) => {
-    res.status(200).render('login', {
-        title: 'Login',
+      deathPercentage,
+      residencyPercentage,
     });
-
-}
-
-// Renders a birth certificate in the dashboard 
-exports.generateBirth = async (req, res, next) => {
-  try {
-    const birthData  = await births.find()
-    const birth = await birthData[birthData.length-1];
-
-
-    res.status(200).render('certificate_birth', {
-    title: 'Generated Birth Certificate',
-    birth
-  })
-
-  next()
-  } catch(err) {
-    res.status(400).json({
-      status: 'Failed'
-    })
-
-    next()
+  } catch (err) {
+    res.status(500).render('error', { message: err.message });
   }
-
-}
-
-// Generates the print-ready template used by the getpuppet function to generate the pdf
-exports.generateBirthPrint = async (req, res, next) => {
-  try {
-    const birthData  = await births.find()
-    const birth = await birthData[birthData.length-1];
-
-
-    res.status(200).render('print_ready', {
-    title: 'Generated Birth Certificate',
-    birth
-  })
-
-  next()
-  } catch(err) {
-    res.status(400).json({
-      status: 'Failed'
-    })
-
-    next()
-  }
-
-}
-
-// Generate Pdf from a print-ready copy of certificate using puppeteer
-exports.puppetBirth = async (req, res, next) => {
-  try {
-
-    const url = 'http://localhost:3000/print-ready';
-    const browser = await puppeteer.launch()
-    
-    const page = await browser.newPage();
-    await page.goto(url);
-
-    // path points to the root of the project directory: fixed later
-    await page.pdf({path: "birth-certificate.pdf", format: "A3"});
-    await browser.close();
-    res.status(200).json({
-      status: 'success',
-      message: 'PDF saved'
-    })
-
-    return next()
-
-  } catch(err) {
-    res.status(400).json({
-      status: 'failed',
-      message: err
-    })
-    return next()
-  }
-}
-
-
-
-// Renders a birth certificate in the dashboard 
-exports.generateMarriage = async (req, res, next) => {
-  try {
-    const marriageData  = await marriages.find();
-    const marriage = await marriageData[marriageData.length-1];
-
-    res.status(200).render('certificate_marriage', {
-    title: 'Generated Marriage Certificate',
-    marriage
-  })
-
-  next()
-  } catch(err) {
-    res.status(400).json({
-      status: 'Failed'
-    })
-
-    next()
-  }
-
-}
-
-// Sends the most recently created marriage certificate to the
-exports.generateMarriagePrint = async (req, res, next) => {
-  try {
-    const marriageData  = await marriages.find();
-    const marriage = await marriageData[marriageData.length-1];
-
-   
-
-    res.status(200).render('print_marriage', {
-    title: 'Generated Marriage Certificate',
-    marriage
-  })
-
-  next()
-  } catch(err) {
-    res.status(400).json({
-      status: 'Failed'
-    })
-
-    next()
-  }
-}
-
-exports.puppetMarriage = async (req, res, next) => {
-  try {
-
-    const url = 'http://localhost:3000/test';
-    const browser = await puppeteer.launch();
-    
-    const page = await browser.newPage();
-    await page.goto(url);
-
-    // path points to the root of the project directory: fixed later
-    await page.pdf({path: "marriage-certificate.pdf", format: "A2"});
-    await browser.close();
-    res.status(200).json({
-      status: 'success',
-      message: 'PDF saved'
-    })
-
-    return next()
-
-  } catch(err) {
-    res.status(400).json({
-      status: 'failed',
-      message: err
-    })
-    return next()
-  }
-}
-
-
-exports.test = async (req, res, next) => {
-  try {
-    const marriageData  = await marriages.find();
-    const marriage = await marriageData[marriageData.length-1];
-
-   
-
-    res.status(200).render('print_marriage', {
-    title: 'Generated Marriage Certificate',
-    marriage
-  })
-
-  next()
-  } catch(err) {
-    res.status(400).json({
-      status: 'Failed'
-    })
-
-    next()
-  }
-
-}
-
-
-// Sends PDf to the browser for downloads
-exports.sendBirthPdf = (req, res) => {
-    let options = {
-      root: path.join(__dirname, '..')
-  };
- 
-    
-  let fileName = 'birth-certificate.pdf';
-  
-  res.status(200).sendFile(fileName, options, function (err) {
-      if (err) {
-          console.log(err)
-      } else {
-          console.log('Sent:', fileName);
-      }
-  });
-
-}
-
-exports.sendMarriagePdf = (req, res) => {
-  let options = {
-    root: path.join(__dirname, '..')
 };
 
-  
-let fileName = 'marriage-certificate.pdf';
+exports.birth = (req, res) => {
+  res.status(200).render('birth', { title: 'Register Birth' });
+};
 
-res.status(200).sendFile(fileName, options, function (err) {
-    if (err) {
-        console.log(err)
-    } else {
-        console.log('Sent:', fileName);
+exports.marriage = (req, res) => {
+  res.status(200).render('marriage', { title: 'Register Marriage' });
+};
+
+exports.death = (req, res) => {
+  res.status(200).render('death', { title: 'Register Death' });
+};
+
+exports.residency = (req, res) => {
+  res.status(200).render('residency', { title: 'Residency Certificate' });
+};
+
+exports.requests = async (req, res) => {
+  try {
+    const { status, type } = req.query;
+    const whereClause = {};
+
+    if (status) whereClause.status = status;
+    if (type) whereClause.certificateType = type;
+
+    const requests = await CertificateRequest.findAll({
+      where: whereClause,
+      order: [['createdAt', 'DESC']],
+      limit: 50,
+    });
+    res.status(200).render('requests', { 
+      title: 'Certificate Requests', 
+      requests,
+      selectedStatus: status || '',
+      selectedType: type || '',
+    });
+  } catch (err) {
+    res.status(500).render('error', { message: err.message });
+  }
+};
+
+exports.requestCertificate = (req, res) => {
+  res.status(200).render('request_certificate', { 
+    title: 'Request Certificate',
+    user: res.locals.user || null,
+  });
+};
+
+exports.trackRequest = (req, res) => {
+  res.status(200).render('track_request', { title: 'Track Request' });
+};
+
+exports.upload = (req, res) => {
+  res.status(200).render('upload', { title: 'Upload CSV' });
+};
+
+exports.generateBirth = async (req, res) => {
+  try {
+    const birth = await Birth.findOne({ order: [['createdAt', 'DESC']] });
+
+    if (!birth) {
+      return res.status(404).render('error', { message: 'No birth certificate found' });
     }
-});
 
-}
+    res.status(200).render('certificate_birth', {
+      title: 'Birth Certificate',
+      birth,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
 
+exports.generateBirthPrint = async (req, res) => {
+  try {
+    let birth;
+    if (req.query.id) {
+      birth = await Birth.findByPk(req.query.id);
+    } else {
+      birth = await Birth.findOne({ order: [['createdAt', 'DESC']] });
+    }
 
+    if (!birth) {
+      return res.status(404).render('error', { message: 'No birth certificate found' });
+    }
 
+    res.status(200).render('print_ready', {
+      title: 'Birth Certificate - Print',
+      birth,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
 
+exports.generateMarriage = async (req, res) => {
+  try {
+    const marriage = await Marriage.findOne({ order: [['createdAt', 'DESC']] });
 
+    if (!marriage) {
+      return res.status(404).render('error', { message: 'No marriage certificate found' });
+    }
 
+    res.status(200).render('certificate_marriage', {
+      title: 'Marriage Certificate',
+      marriage,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.generateMarriagePrint = async (req, res) => {
+  try {
+    let marriage;
+    if (req.query.id) {
+      marriage = await Marriage.findByPk(req.query.id);
+    } else {
+      marriage = await Marriage.findOne({ order: [['createdAt', 'DESC']] });
+    }
+
+    if (!marriage) {
+      return res.status(404).render('error', { message: 'No marriage certificate found' });
+    }
+
+    res.status(200).render('print_marriage', {
+      title: 'Marriage Certificate - Print',
+      marriage,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.puppetBirth = async (req, res) => {
+  try {
+    const url = `http://localhost:${process.env.PORT || 3000}/print-ready`;
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.pdf({ path: 'birth-certificate.pdf', format: 'A3' });
+    await browser.close();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'PDF generated successfully',
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+};
+
+exports.puppetMarriage = async (req, res) => {
+  try {
+    const url = `http://localhost:${process.env.PORT || 3000}/print-ready-marriage`;
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle0' });
+    await page.pdf({ path: 'marriage-certificate.pdf', format: 'A2' });
+    await browser.close();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'PDF generated successfully',
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+};
+
+exports.sendBirthPdf = (req, res) => {
+  const options = { root: path.join(__dirname, '..') };
+  const fileName = 'birth-certificate.pdf';
+
+  res.sendFile(fileName, options, (err) => {
+    if (err) {
+      res.status(404).json({ status: 'failed', message: 'PDF not found' });
+    }
+  });
+};
+
+exports.sendMarriagePdf = (req, res) => {
+  const options = { root: path.join(__dirname, '..') };
+  const fileName = 'marriage-certificate.pdf';
+
+  res.sendFile(fileName, options, (err) => {
+    if (err) {
+      res.status(404).json({ status: 'failed', message: 'PDF not found' });
+    }
+  });
+};
+
+exports.test = async (req, res) => {
+  try {
+    const marriage = await Marriage.findOne({ order: [['createdAt', 'DESC']] });
+    res.status(200).render('print_marriage', {
+      title: 'Marriage Certificate',
+      marriage,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.generateDeath = async (req, res) => {
+  try {
+    const death = await Death.findOne({ order: [['createdAt', 'DESC']] });
+
+    if (!death) {
+      return res.status(404).render('error', { message: 'No death certificate found' });
+    }
+
+    res.status(200).render('certificate_death', {
+      title: 'Death Certificate',
+      death,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.generateDeathPrint = async (req, res) => {
+  try {
+    let death;
+    if (req.query.id) {
+      death = await Death.findByPk(req.query.id);
+    } else {
+      death = await Death.findOne({ order: [['createdAt', 'DESC']] });
+    }
+
+    if (!death) {
+      return res.status(404).render('error', { message: 'No death certificate found' });
+    }
+
+    res.status(200).render('print_death', {
+      title: 'Death Certificate - Print',
+      death,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.generateResidency = async (req, res) => {
+  try {
+    const residency = await ResidencyCertificate.findOne({ order: [['createdAt', 'DESC']] });
+
+    if (!residency) {
+      return res.status(404).render('error', { message: 'No residency certificate found' });
+    }
+
+    res.status(200).render('certificate_residency', {
+      title: 'Residency Certificate',
+      residency,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.generateResidencyPrint = async (req, res) => {
+  try {
+    let residency;
+    if (req.query.id) {
+      residency = await ResidencyCertificate.findByPk(req.query.id);
+    } else {
+      residency = await ResidencyCertificate.findOne({ order: [['createdAt', 'DESC']] });
+    }
+
+    if (!residency) {
+      return res.status(404).render('error', { message: 'No residency certificate found' });
+    }
+
+    res.status(200).render('print_residency', {
+      title: 'Residency Certificate - Print',
+      residency,
+    });
+  } catch (err) {
+    res.status(400).render('error', { message: err.message });
+  }
+};
+
+exports.clientDashboard = async (req, res) => {
+  try {
+    const userId = res.locals.user ? res.locals.user.id : null;
+    const userEmail = res.locals.user ? res.locals.user.email : null;
+
+    let requests = [];
+    let pendingCount = 0;
+    let processingCount = 0;
+    let completedCount = 0;
+    let rejectedCount = 0;
+
+    if (userEmail) {
+      requests = await CertificateRequest.findAll({
+        where: { requesterEmail: userEmail },
+        order: [['createdAt', 'DESC']],
+      });
+
+      pendingCount = requests.filter((r) => r.status === 'pending').length;
+      processingCount = requests.filter((r) => r.status === 'processing').length;
+      completedCount = requests.filter((r) => r.status === 'completed' || r.status === 'approved').length;
+      rejectedCount = requests.filter((r) => r.status === 'rejected').length;
+    }
+
+    res.status(200).render('client_dashboard', {
+      title: 'Client Dashboard',
+      requests,
+      pendingCount,
+      processingCount,
+      completedCount,
+      rejectedCount,
+    });
+  } catch (err) {
+    res.status(500).render('error', { message: err.message });
+  }
+};
+
+exports.admin = async (req, res) => {
+  try {
+    const totalBirths = await Birth.count();
+    const totalDeaths = await Death.count();
+    const totalMarriages = await Marriage.count();
+    const totalResidencies = await ResidencyCertificate.count();
+    const totalRequests = await CertificateRequest.count();
+    const totalUsers = await User.count();
+
+    res.status(200).render('admin', {
+      title: 'Admin Dashboard',
+      user: req.user,
+      totalBirths,
+      totalDeaths,
+      totalMarriages,
+      totalResidencies,
+      totalRequests,
+      totalUsers,
+    });
+  } catch (err) {
+    console.error('Admin error:', err);
+    res.status(500).render('error', { message: err.message });
+  }
+};

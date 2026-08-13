@@ -1,206 +1,102 @@
+// Birth Registration Form Handler
+const birthForm = document.getElementById('birthForm');
 
+if (birthForm) {
+  birthForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// Elements
-const btn = document.getElementById('btnbig');
-const form = document.getElementById('birth-form');
-const print = document.getElementById('print')
+    const formData = new FormData(birthForm);
+    const data = {
+      surname: formData.get('surname'),
+      givenname: formData.get('givenname'),
+      bornAt: formData.get('born_at'),
+      bornOn: formData.get('born_on'),
+      sex: formData.get('sex'),
+      fatherName: formData.get('father_name'),
+      fatherBornAt: formData.get('father_born_at'),
+      fatherBornOn: formData.get('father_born_on'),
+      fatherResidentAt: formData.get('father_resident_at'),
+      fatherOccupation: formData.get('father_occupation'),
+      fatherNationality: formData.get('father_nationality'),
+      fatherRefDoc: formData.get('father_ref_doc'),
+      motherName: formData.get('mother_name'),
+      motherBornAt: formData.get('mother_born_at'),
+      motherBornOn: formData.get('mother_born_on'),
+      motherResidentAt: formData.get('mother_resident_at'),
+      motherOccupation: formData.get('mother_occupation'),
+      motherNationality: formData.get('mother_nationality'),
+      motherRefDoc: formData.get('mother_ref_doc'),
+    };
 
-// btn.addEventListener('click', ()=>{
-//     printJS('/public/birth-certificates/pdf1.pdf')
-// })
-// Delegation
+    const submitBtn = birthForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = `
+      <svg class="w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Registering...</span>
+    `;
+    submitBtn.disabled = true;
 
-
-const createBirth = async (givenname, born_at, born_on, surname, sex, father_born_at, father_born_on, father_name, father_nationality, father_occupation, father_resident_at, father_ref_doc, mother_born_at, mother_born_on, mother_name, mother_nationality, mother_occupation, mother_ref_doc, mother_resident_at) => {
     try {
-    
-       const res = await axios({
-            method: 'POST',
-            url: 'http://localhost:3000/api/certificates/birth',
-            data: {
-                givenname, born_at, born_on, surname, sex, father_born_at, father_born_on, father_name, father_nationality, father_occupation, father_resident_at, father_ref_doc, mother_born_at, mother_born_on, mother_name, mother_nationality, mother_occupation, mother_ref_doc, mother_resident_at
-            }
+      const response = await fetch('/api/certificates/birth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-        })
+      const result = await response.json();
 
-        
-        console.log(res);
-
-        if (res.data.status === 'Success') {
-
-            // request envokes puppeteer to  generated the  pdf 
-             (async( ) => {
-                try{
-                    const createPdf =  await axios({
-                            method: 'GET',
-                            url: 'http://localhost:3000/create-birth-pdf'
-                        })  
-                    
-                        console.log(createPdf);
-                    if (createPdf.data.status === 'success') {
-
-                        alert('Birth Registered Successful, redirecting to print page')
-                        
-            window.setTimeout(()=>{
-                location.assign('/generate-birth-certificate')
-            }, 1000);
-
-                    }
-                    
-                } catch(err) {
-                    console.log(err)
-                } 
-
-               
-            })();
-
-            
-          
-           
-        }
-    } catch (err) {
-       console.log(err.response.data);
+      if (result.status === 'success') {
+        showNotification('Birth certificate registered successfully!', 'success');
+        birthForm.reset();
+        // Redirect to view certificate
+        setTimeout(() => {
+          window.location.href = '/generate-birth-certificate';
+        }, 1500);
+      } else {
+        showNotification(result.message || 'Failed to register birth certificate', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showNotification('An error occurred. Please try again.', 'error');
+    } finally {
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
     }
+  });
 }
 
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
+    type === 'success' ? 'bg-green-600' : 'bg-red-600'
+  } text-white`;
+  notification.innerHTML = `
+    <div class="flex items-center gap-3">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        ${
+          type === 'success'
+            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+        }
+      </svg>
+      <span>${message}</span>
+    </div>
+  `;
+  document.body.appendChild(notification);
 
+  // Animate in
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 100);
 
-if (form) {
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-        const givenname = document.getElementById('Givenname').value;
-
-        const surname = document.getElementById('Surname').value;
-        const born_at = document.getElementById('BornAt').value;
-        const born_on = document.getElementById('born_on').value;
-
-        var sex = document.querySelector('input[name="Gender"]:checked').value;
-
-        const father_name = document.getElementById('Father-name').value;
-        const father_ref_doc = document.getElementById('father-Id').value;
-        const father_nationality = document.getElementById('father-nation').value;
-        const father_resident_at = document.getElementById('father-Residence').value;
-        const father_born_at = document.getElementById('father-Born-At').value;
-        const father_born_on = document.getElementById('father-Born-On').value;
-        const father_occupation = document.getElementById('father-Occupation').value;
-
-        const mother_name = document.getElementById('mother-Name').value;
-        const mother_ref_doc = document.getElementById('mother-Id').value;
-        const mother_nationality = document.getElementById('mother-Nation').value;
-        const mother_resident_at = document.getElementById('mother-Residence').value;
-        const mother_born_at = document.getElementById('mother-Born-At').value;
-        const mother_born_on = document.getElementById('mother-Born-On').value;
-        const mother_occupation = document.getElementById('mother-Occupation').value;
-
-
-
-        console.log(born_on);
-
-
-        createBirth(givenname, born_at, born_on, surname, sex, father_born_at, father_born_on, father_name, father_nationality, father_occupation, father_resident_at, father_ref_doc, mother_born_at, mother_born_on, mother_name, mother_nationality, mother_occupation, mother_ref_doc, mother_resident_at);
-
-    });
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }
-
-
-
-// // Elements
-// const btn = document.getElementById('next1');
-// const form = document.getElementById('birth-form');
-// const btn2 = document.getElementById('btn');
-
-// let id = '60f026da30b2900e809a1a10'
-// btn2.addEventListener('click', async() => {
-//     const watgot = await getBirth(id)
-   
-    
-// })
-// // Delegation
-
-// export const testign = () => {
-//     return 'Hello from export'
-// }
-
-// export const getBirth = async (id) =>{
-  
-//     try {
-//       const res  = await axios({
-//             method: 'GET',
-//             url: `http://localhost:3000/api/certificates/birth/${id}`
-
-//         })
-//         document.getElementById('test').innerHTML = res.data.data.birth.born_at;
-//         return res.data.data.birth;
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// const createBirth = async (givenname, surname, born_at, born_on, father_name, father_born_at, father_born_on, father_ref_doc, father_occupation, father_resident_at, father_nationality, mother_born_at, mother_born_on, mother_ref_doc, mother_name, mother_occupation, mother_resident_at, mother_nationality, sex) => {
-//     try {
-    
-//        const res = await axios({
-//             method: 'POST',
-//             url: 'http://127.0.0.1:3000/api/certificates/birth',
-//             data: {
-//                 givenname,
-//                 surname,
-//                 born_at, born_on, father_name, father_born_at, father_born_on, father_ref_doc, father_occupation, father_resident_at, father_nationality, mother_born_at, mother_born_on, mother_ref_doc, mother_name, mother_occupation, mother_resident_at, mother_nationality, sex
-//             }
-
-//         })
-
-//         // getBirth(res.data.data.newBirth.id)
-        
-//         console.log(res.data.data.newBirth.id);
-
-//         if (res.data.status === 'Success') {
-            
-//             alert('Successful')
-//             // window.setTimeout(()=>{
-//             //     location.assign('/dashboard')
-//             // }, 1000)
-//         }
-//     } catch (err) {
-//        console.log(err.response.data);
-//     }
-// }
-
-    
-
-// if (form) {
-//     form.addEventListener('submit', event => {
-//         event.preventDefault();
-//         const givenname = document.getElementById('Givenname').value;
-
-//         const surname = document.getElementById('Surname').value;
-//         const born_at = document.getElementById('BornAt').value;
-//         const born_on = document.getElementById('BornOn').value;
-
-//         var sex = document.querySelector('input[name="Gender"]:checked').value;
-
-//         const father_name = document.getElementById('Father-name').value;
-//         const father_ref_doc = document.getElementById('father-Id').value;
-//         const father_nationality = document.getElementById('father-nation').value;
-//         const father_resident_at = document.getElementById('father-Residence').value;
-//         const father_born_at = document.getElementById('father-Born-At').value;
-//         const father_born_on = document.getElementById('father-Born-On').value;
-//         const father_occupation = document.getElementById('father-Occupation').value;
-
-//         const mother_name = document.getElementById('mother-Name').value;
-//         const mother_ref_doc = document.getElementById('mother-Id').value;
-//         const mother_nationality = document.getElementById('mother-Nation').value;
-//         const mother_resident_at = document.getElementById('mother-Residence').value;
-//         const mother_born_at = document.getElementById('mother-Born-At').value;
-//         const mother_born_on = document.getElementById('mother-Born-On').value;
-//         const mother_occupation = document.getElementById('mother-Occupation').value;
-
-
-
-//         console.log(sex);
-
-
-//         createBirth(givenname, surname, born_at, born_on, father_name, father_born_at, father_born_on, father_ref_doc, father_occupation, father_resident_at, father_nationality, mother_born_at, mother_born_on, mother_ref_doc, mother_name, mother_occupation, mother_resident_at, mother_nationality, sex);
-
-//     });
-// }

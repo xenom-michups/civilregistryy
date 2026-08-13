@@ -3,82 +3,70 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
 const hpp = require('hpp');
 
-// ENVIRONMENT
+// Load environment variables
 dotenv.config({ path: './config.env' });
 
-// DB CONFIG
-const DB = 'mongodb://localhost:27017/civil-registry';
-mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .then(() => {
-    console.log('Database connected');
-  });
+// Database
+const db = require('./models');
 
-// ROUTERS
-const viewRouter = require('./routes/viewRoutes')
-const indexRouter = require('./routes/index');
+// Routers
+const viewRouter = require('./routes/viewRoutes');
 const usersRouter = require('./routes/usersRoutes');
 const marriageRouter = require('./routes/marriageRoutes');
 const birthRouter = require('./routes/birthRoutes');
-
+const deathRouter = require('./routes/deathRoutes');
+const residencyRouter = require('./routes/residencyRoutes');
+const requestRouter = require('./routes/requestRoutes');
+const publicRouter = require('./routes/publicRoutes');
+const adminRouter = require('./routes/adminRoutes');
 
 const app = express();
 
-// 1) Global middleware
+// Global middleware
 
-// CSP 
-app.use((req, res, next) => {
- 
-  res.setHeader(
-    'Content-Security-Policy-Report-Only',
-    "default-src 'self' http://127.0.0.1:3000/api/users/login; font-src 'self' https:; img-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; connect-src http://localhost:3000; frame-src 'self' http://localhost:3000"
-  )
-  next();
-})
+// Security HTTP Headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://cdn.jsdelivr.net'],
+        scriptSrcAttr: ["'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'blob:'],
+        connectSrc: ["'self'"],
+      },
+    },
+  })
+);
 
-
-// Set Security HTTP Headers
-app.use(helmet());
-
-// Limit request from same API
+// Rate limiting
 const limiter = rateLimit({
   max: 1000,
   windowMs: 60 * 60 * 1000,
-  message: 'Too many request from this IP, please try again in an hour!',
+  message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/', limiter);
 
-// VIEW ENGINE SETUP
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+// Logging
+if (process.env.NODE_ENV === 'development') {
+  app.use(logger('dev'));
+}
 
-// Body parser, reading data from body into req.body
-app.use(express.json());
-
-// Data sanitization against NoSQL query injection
-app.use(mongoSanitize());
-
-// Data sanitization against XSS
-app.use(xss());
-
-app.use(express.urlencoded({ extended: false }));
+// Body parser
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
-
 
 // Prevent parameter pollution
 app.use(
@@ -87,32 +75,40 @@ app.use(
   })
 );
 
-// Serving static files
+// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-// ROUTES
+// Routes
 app.use('/', viewRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/certificates', marriageRouter, birthRouter);
+app.use('/api/deaths', deathRouter);
+app.use('/api/residency', residencyRouter);
+app.use('/api/requests', requestRouter);
+app.use('/api/public', publicRouter);
+app.use('/api/admin', adminRouter);
 
-
-
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
+// 404 handler
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
+// Error handler
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Database connection and sync
+db.sequelize
+  .authenticate()
+  .then(() => {
+    console.log('✅ Database connected successfully');
+  })
+  .catch((err) => {
+    console.error('❌ Unable to connect to the database:', err);
+  });
 
 module.exports = app;

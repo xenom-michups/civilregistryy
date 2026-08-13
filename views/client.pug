@@ -1,0 +1,250 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Certificate Lookup | Civil Registry System
+    link(rel="stylesheet" href="/styles/tailwind.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet")
+    link(rel="icon" href="/images/Favicon.png" type="image/png")
+
+  body.bg-dark-950.text-white.min-h-screen
+    nav.fixed.top-0.left-0.right-0.z-50.glass.border-b.border-dark-800
+      .max-w-7xl.mx-auto.px-6.py-4
+        .flex.items-center.justify-between
+          a.flex.items-center.gap-3(href="/")
+            .w-10.h-10.bg-primary-600.rounded-xl.flex.items-center.justify-center
+              svg.w-6.h-6.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            span.text-xl.font-bold Civil Registry System
+          .flex.items-center.gap-4
+            a.text-dark-400.text-sm(href="/" class="hover:text-white") Home
+            a.text-dark-400.text-sm(href="/request-certificate" class="hover:text-white") Request
+            a.text-dark-400.text-sm(href="/track-request" class="hover:text-white") Track
+            if user
+              a.btn.btn-secondary(href="/client-dashboard") Dashboard
+              button#logOutBtn.btn.btn-outline Logout
+            else
+              a.btn.btn-primary(href="/login") Login or Register
+
+    .pt-24.pb-16.px-6
+      .max-w-4xl.mx-auto
+        .text-center.mb-12
+          div(class="w-20 h-20 bg-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6")
+            svg.w-10.h-10.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+          h1.text-4xl.font-bold.mb-4 Certificate Lookup
+          p.text-xl.text-dark-400 Search and verify civil registry certificates
+
+        .card.overflow-hidden
+          //- Tab Headers
+          .flex.flex-wrap.border-b.border-dark-700
+            button.tab-btn.flex-1.py-3.px-4.text-sm.font-medium.transition-colors.bg-dark-800.text-primary-500.border-b-2.border-primary-500(type="button" data-tab="birth")
+              span Birth
+            button.tab-btn.flex-1.py-3.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="death" class="hover:text-white hover:bg-dark-800")
+              span Death
+            button.tab-btn.flex-1.py-3.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="marriage" class="hover:text-white hover:bg-dark-800")
+              span Marriage
+
+          //- Birth Search
+          #birthSearch.tab-content.p-6
+            form#birthSearchForm.space-y-4
+              .grid.gap-4(class="md:grid-cols-2")
+                div
+                  label.label Certificate Number
+                  input#birthCertNum.input(type="text" placeholder="e.g., BC-2023-000001")
+                div
+                  label.label Full Name
+                  input#birthName.input(type="text" placeholder="Enter name")
+              button.btn.btn-primary.w-full.py-3(type="submit") Search Birth Certificate
+
+          //- Death Search
+          #deathSearch.tab-content.hidden.p-6
+            form#deathSearchForm.space-y-4
+              .grid.gap-4(class="md:grid-cols-2")
+                div
+                  label.label Certificate Number
+                  input#deathCertNum.input(type="text" placeholder="e.g., DC-2023-000001")
+                div
+                  label.label Deceased Name
+                  input#deathName.input(type="text" placeholder="Enter name")
+              button.btn.btn-primary.w-full.py-3(type="submit") Search Death Certificate
+
+          //- Marriage Search
+          #marriageSearch.tab-content.hidden.p-6
+            form#marriageSearchForm.space-y-4
+              .grid.gap-4(class="md:grid-cols-2")
+                div
+                  label.label Certificate Number
+                  input#marriageCertNum.input(type="text" placeholder="e.g., MC-2023-000001")
+                div
+                  label.label Groom or Bride Name
+                  input#marriageName.input(type="text" placeholder="Enter name")
+              button.btn.btn-primary.w-full.py-3(type="submit") Search Marriage Certificate
+
+        #searchResults.mt-8.hidden
+          .card.p-6
+            h3.text-lg.font-semibold.mb-4 Search Results
+            #resultsContent
+
+        .mt-12
+          h2.text-2xl.font-bold.mb-6 Certificate Statistics
+          .grid.gap-4(class="md:grid-cols-4")
+            .card.p-4
+              .flex.items-center.gap-3
+                div(class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center")
+                  svg.w-6.h-6.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+                div
+                  p.text-2xl.font-bold#birthCount -
+                  p.text-dark-400.text-sm Births
+            .card.p-4
+              .flex.items-center.gap-3
+                div(class="w-12 h-12 bg-gray-600/20 rounded-xl flex items-center justify-center")
+                  svg.w-6.h-6.text-gray-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+                div
+                  p.text-2xl.font-bold#deathCount -
+                  p.text-dark-400.text-sm Deaths
+            .card.p-4
+              .flex.items-center.gap-3
+                div(class="w-12 h-12 bg-pink-600/20 rounded-xl flex items-center justify-center")
+                  svg.w-6.h-6.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+                div
+                  p.text-2xl.font-bold#marriageCount -
+                  p.text-dark-400.text-sm Marriages
+            .card.p-4
+              .flex.items-center.gap-3
+                div(class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center")
+                  svg.w-6.h-6.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                    path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+                div
+                  p.text-2xl.font-bold#residencyCount -
+                  p.text-dark-400.text-sm Residency
+
+    footer.bg-dark-900.border-t.border-dark-800.py-8
+      .max-w-7xl.mx-auto.px-6.text-center
+        p.text-dark-500.text-sm © #{new Date().getFullYear()} Civil Registry System. All rights reserved.
+
+    script(src="/js/login.js")
+    script.
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('bg-dark-800', 'text-primary-500', 'border-b-2', 'border-primary-500');
+            b.classList.add('text-dark-400');
+          });
+          btn.classList.add('bg-dark-800', 'text-primary-500', 'border-b-2', 'border-primary-500');
+          btn.classList.remove('text-dark-400');
+          
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          document.getElementById(btn.dataset.tab + 'Search').classList.remove('hidden');
+        });
+      });
+
+      // Load stats
+      async function loadStats() {
+        try {
+          const [b, d, m, r] = await Promise.all([
+            fetch('/api/public/stats/birth').then(r => r.json()),
+            fetch('/api/public/stats/death').then(r => r.json()),
+            fetch('/api/public/stats/marriage').then(r => r.json()),
+            fetch('/api/public/stats/residency').then(r => r.json())
+          ]);
+          document.getElementById('birthCount').textContent = b.data?.total || 0;
+          document.getElementById('deathCount').textContent = d.data?.total || 0;
+          document.getElementById('marriageCount').textContent = m.data?.total || 0;
+          document.getElementById('residencyCount').textContent = r.data?.total || 0;
+        } catch (err) { console.log('Stats error'); }
+      }
+      loadStats();
+
+      // Search handlers
+      function showResults(html) {
+        document.getElementById('searchResults').classList.remove('hidden');
+        document.getElementById('resultsContent').innerHTML = html;
+      }
+
+      document.getElementById('birthSearchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const certNum = document.getElementById('birthCertNum').value;
+        const name = document.getElementById('birthName').value;
+        if (!certNum && !name) { alert('Enter certificate number or name'); return; }
+        showResults('<p class="text-dark-400 text-center py-4">Searching...</p>');
+        try {
+          const params = new URLSearchParams();
+          if (certNum) params.append('certificateNumber', certNum);
+          if (name) params.append('search', name);
+          const res = await fetch(`/api/public/birth?${params}`);
+          const data = await res.json();
+          if (data.data?.births?.length > 0) {
+            showResults(data.data.births.map(b => `
+              <div class="p-4 bg-dark-800 rounded-lg mb-3">
+                <div class="flex justify-between mb-2">
+                  <span class="font-mono text-primary-500">${b.certificateNumber || 'N/A'}</span>
+                  <span class="px-2 py-1 text-xs rounded-full ${b.sex === 'male' ? 'bg-blue-500/20 text-blue-400' : 'bg-pink-500/20 text-pink-400'}">${b.sex}</span>
+                </div>
+                <h4 class="font-semibold">${b.givenname} ${b.surname}</h4>
+                <p class="text-dark-400 text-sm">Born: ${new Date(b.bornOn).toLocaleDateString()} at ${b.bornAt}</p>
+              </div>
+            `).join(''));
+          } else { showResults('<p class="text-dark-400 text-center py-4">No results found.</p>'); }
+        } catch (err) { showResults('<p class="text-red-400 text-center py-4">Search error.</p>'); }
+      });
+
+      document.getElementById('deathSearchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const certNum = document.getElementById('deathCertNum').value;
+        const name = document.getElementById('deathName').value;
+        if (!certNum && !name) { alert('Enter certificate number or name'); return; }
+        showResults('<p class="text-dark-400 text-center py-4">Searching...</p>');
+        try {
+          const params = new URLSearchParams();
+          if (certNum) params.append('certificateNumber', certNum);
+          if (name) params.append('search', name);
+          const res = await fetch(`/api/public/death?${params}`);
+          const data = await res.json();
+          if (data.data?.deaths?.length > 0) {
+            showResults(data.data.deaths.map(d => `
+              <div class="p-4 bg-dark-800 rounded-lg mb-3">
+                <div class="flex justify-between mb-2">
+                  <span class="font-mono text-primary-500">${d.certificateNumber || 'N/A'}</span>
+                </div>
+                <h4 class="font-semibold">${d.deceasedGivenname} ${d.deceasedSurname}</h4>
+                <p class="text-dark-400 text-sm">Died: ${new Date(d.deathDate).toLocaleDateString()} at ${d.deathPlace}</p>
+              </div>
+            `).join(''));
+          } else { showResults('<p class="text-dark-400 text-center py-4">No results found.</p>'); }
+        } catch (err) { showResults('<p class="text-red-400 text-center py-4">Search error.</p>'); }
+      });
+
+      document.getElementById('marriageSearchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const certNum = document.getElementById('marriageCertNum').value;
+        const name = document.getElementById('marriageName').value;
+        if (!certNum && !name) { alert('Enter certificate number or name'); return; }
+        showResults('<p class="text-dark-400 text-center py-4">Searching...</p>');
+        try {
+          const params = new URLSearchParams();
+          if (certNum) params.append('certificateNumber', certNum);
+          if (name) { params.append('groom', name); params.append('bride', name); }
+          const res = await fetch(`/api/public/marriage?${params}`);
+          const data = await res.json();
+          if (data.data?.marriages?.length > 0) {
+            showResults(data.data.marriages.map(m => `
+              <div class="p-4 bg-dark-800 rounded-lg mb-3">
+                <div class="flex justify-between mb-2">
+                  <span class="font-mono text-primary-500">${m.certificateNumber || 'N/A'}</span>
+                  <span class="px-2 py-1 text-xs rounded-full bg-pink-500/20 text-pink-400">${m.marriageType}</span>
+                </div>
+                <h4 class="font-semibold">${m.groomGivenName} ${m.groomSurname} & ${m.brideGivenName} ${m.brideSurname}</h4>
+                <p class="text-dark-400 text-sm">Married: ${new Date(m.drawnUpOn).toLocaleDateString()}</p>
+              </div>
+            `).join(''));
+          } else { showResults('<p class="text-dark-400 text-center py-4">No results found.</p>'); }
+        } catch (err) { showResults('<p class="text-red-400 text-center py-4">Search error.</p>'); }
+      });

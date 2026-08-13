@@ -1,3 +1,141 @@
 extends layout
+
 block content
-    include _reg-marriage
+  .max-w-5xl.mx-auto
+    //- Header
+    .flex.items-center.justify-between.mb-8
+      div
+        h2.text-2xl.font-bold Register Marriage Certificate
+        p.text-dark-400.mt-1 Fill in the details to create a new marriage certificate
+
+    //- Form
+    form#marriageForm.space-y-8
+      //- Groom Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Groom's Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="groom_given_name") Given Name *
+            input#groom_given_name.input(type="text" name="groom_given_name" required placeholder="Given name")
+          div
+            label.label(for="groom_surname") Surname *
+            input#groom_surname.input(type="text" name="groom_surname" required placeholder="Surname")
+          div
+            label.label(for="groom_born_on") Date of Birth *
+            input#groom_born_on.input(type="date" name="groom_born_on" required)
+          div
+            label.label(for="groom_place_birth") Place of Birth *
+            input#groom_place_birth.input(type="text" name="groom_place_birth" required placeholder="Place of birth")
+          div
+            label.label(for="groom_resident_at") Residence *
+            input#groom_resident_at.input(type="text" name="groom_resident_at" required placeholder="Current residence")
+          div
+            label.label(for="groom_profession") Profession *
+            input#groom_profession.input(type="text" name="groom_profession" required placeholder="Profession")
+          div
+            label.label(for="groom_nationality") Nationality *
+            input#groom_nationality.input(type="text" name="groom_nationality" value="Cameroon" required)
+          div
+            label.label(for="groom_id_num") National ID Number *
+            input#groom_id_num.input(type="text" name="groom_id_num" required placeholder="ID number")
+          div
+            label.label(for="groom_father_name") Father's Name *
+            input#groom_father_name.input(type="text" name="groom_father_name" required placeholder="Father's name")
+          div
+            label.label(for="groom_mother_name") Mother's Name *
+            input#groom_mother_name.input(type="text" name="groom_mother_name" required placeholder="Mother's name")
+          div
+            label.label(for="groom_family_head") Family Head *
+            input#groom_family_head.input(type="text" name="groom_family_head" required placeholder="Family head name")
+          div
+            label.label(for="groom_witness_name") Witness Name *
+            input#groom_witness_name.input(type="text" name="groom_witness_name" required placeholder="Witness name")
+
+      //- Bride Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-pink-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Bride's Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="bride_given_name") Given Name *
+            input#bride_given_name.input(type="text" name="bride_given_name" required placeholder="Given name")
+          div
+            label.label(for="bride_surname") Surname *
+            input#bride_surname.input(type="text" name="bride_surname" required placeholder="Surname")
+          div
+            label.label(for="bride_born_on") Date of Birth *
+            input#bride_born_on.input(type="date" name="bride_born_on" required)
+          div
+            label.label(for="bride_place_birth") Place of Birth *
+            input#bride_place_birth.input(type="text" name="bride_place_birth" required placeholder="Place of birth")
+          div
+            label.label(for="bride_resident_at") Residence *
+            input#bride_resident_at.input(type="text" name="bride_resident_at" required placeholder="Current residence")
+          div
+            label.label(for="bride_profession") Profession *
+            input#bride_profession.input(type="text" name="bride_profession" required placeholder="Profession")
+          div
+            label.label(for="bride_nationality") Nationality *
+            input#bride_nationality.input(type="text" name="bride_nationality" value="Cameroon" required)
+          div
+            label.label(for="bride_id_num") National ID Number *
+            input#bride_id_num.input(type="text" name="bride_id_num" required placeholder="ID number")
+          div
+            label.label(for="bride_father_name") Father's Name *
+            input#bride_father_name.input(type="text" name="bride_father_name" required placeholder="Father's name")
+          div
+            label.label(for="bride_mother_name") Mother's Name *
+            input#bride_mother_name.input(type="text" name="bride_mother_name" required placeholder="Mother's name")
+          div
+            label.label(for="bride_family_head") Family Head *
+            input#bride_family_head.input(type="text" name="bride_family_head" required placeholder="Family head name")
+          div
+            label.label(for="bride_witness_name") Witness Name *
+            input#bride_witness_name.input(type="text" name="bride_witness_name" required placeholder="Witness name")
+
+      //- Marriage Details
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+          h3.text-lg.font-semibold Marriage Details
+
+        .grid.gap-6(class="md:grid-cols-3")
+          div
+            label.label(for="matrimonial_regime") Matrimonial Regime *
+            select#matrimonial_regime.input(name="matrimonial_regime" required)
+              option(value="") Select regime
+              option(value="Joint") Joint
+              option(value="Separate") Separate
+          div
+            label.label(for="marriage_type") Marriage Type *
+            select#marriage_type.input(name="marriage_type" required)
+              option(value="") Select type
+              option(value="Monogamy") Monogamy
+              option(value="Polygamy") Polygamy
+          div
+            label.label(for="objections") Objections *
+            select#objections.input(name="objections" required)
+              option(value="No") No
+              option(value="Yes") Yes
+
+      //- Submit
+      .flex.items-center.justify-end.gap-4
+        button.btn.btn-secondary(type="reset") Clear Form
+        button.btn.btn-primary.px-8(type="submit")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          span Register Marriage
+
+block scripts
+  script(src="/js/marriage-reg.js")

@@ -1,3 +1,66 @@
-extends layout 
-block content 
- include _reg_upload
+extends layout
+
+block content
+  .max-w-3xl.mx-auto
+    //- Header
+    .text-center.mb-8
+      h2.text-2xl.font-bold Bulk Upload
+      p.text-dark-400.mt-1 Import multiple records using CSV files
+
+    //- Upload Cards
+    .grid.gap-6(class="md:grid-cols-2")
+      //- Birth Upload
+      .card.p-8.text-center
+        div(class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6")
+          svg.w-8.h-8.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+        h3.text-lg.font-semibold.mb-2 Birth Certificates
+        p.text-dark-400.text-sm.mb-6 Upload CSV file with birth records
+
+        .border-2.border-dashed.border-dark-600.rounded-xl.p-8.transition-colors(class="hover:border-primary-500")
+          input#birthFile.hidden(type="file" accept=".csv")
+          label.cursor-pointer(for="birthFile")
+            svg.w-12.h-12.text-dark-500.mx-auto.mb-4(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12")
+            p.text-dark-400.text-sm Click to upload or drag and drop
+            p.text-dark-500.text-xs.mt-1 CSV files only
+
+        button.btn.btn-primary.w-full.mt-6(type="button" id="uploadBirthBtn")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12")
+          span Upload Birth Records
+
+      //- Marriage Upload
+      .card.p-8.text-center
+        div(class="w-16 h-16 bg-pink-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6")
+          svg.w-8.h-8.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+        h3.text-lg.font-semibold.mb-2 Marriage Certificates
+        p.text-dark-400.text-sm.mb-6 Upload CSV file with marriage records
+
+        .border-2.border-dashed.border-dark-600.rounded-xl.p-8.transition-colors(class="hover:border-primary-500")
+          input#marriageFile.hidden(type="file" accept=".csv")
+          label.cursor-pointer(for="marriageFile")
+            svg.w-12.h-12.text-dark-500.mx-auto.mb-4(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12")
+            p.text-dark-400.text-sm Click to upload or drag and drop
+            p.text-dark-500.text-xs.mt-1 CSV files only
+
+        button.btn.btn-primary.w-full.mt-6(type="button" id="uploadMarriageBtn")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12")
+          span Upload Marriage Records
+
+    //- CSV Format Guide
+    .card.p-6.mt-8
+      h3.text-lg.font-semibold.mb-4 CSV Format Guide
+      .space-y-4
+        div
+          h4.text-sm.font-medium.text-primary-500.mb-2 Birth Certificate CSV Headers:
+          code.text-xs.text-dark-400.bg-dark-900.p-3.rounded-lg.block.overflow-x-auto
+            | surname, givenname, born_at, born_on, sex, father_name, father_born_at, father_born_on, father_resident_at, father_occupation, father_nationality, father_ref_doc, mother_name, mother_born_at, mother_born_on, mother_resident_at, mother_occupation, mother_nationality, mother_ref_doc
+
+        div
+          h4.text-sm.font-medium.text-primary-500.mb-2 Marriage Certificate CSV Headers:
+          code.text-xs.text-dark-400.bg-dark-900.p-3.rounded-lg.block.overflow-x-auto
+            | groom_given_name, groom_surname, groom_profession, groom_nationality, groom_born_on, groom_place_birth, groom_resident_at, groom_id_num, groom_father_name, groom_mother_name, groom_family_head, groom_witness_name, bride_given_name, bride_surname, bride_profession, bride_nationality, bride_born_on, bride_place_birth, bride_resident_at, bride_id_num, bride_father_name, bride_mother_name, bride_family_head, bride_witness_name, matrimonial_regime, marriage_type, objections

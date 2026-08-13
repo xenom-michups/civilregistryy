@@ -1,0 +1,105 @@
+extends layout
+
+block content
+  .max-w-4xl.mx-auto
+    .flex.items-center.justify-between.mb-6
+      a.btn.btn-secondary(href="/dashboard")
+        svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18")
+        span Back to Dashboard
+      .flex.gap-3.no-print
+        a.btn.btn-secondary(href="/print-ready-residency" target="_blank")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z")
+          span Print View
+        button.btn.btn-primary(onclick="window.print()")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z")
+          span Print
+
+    .card.p-8.bg-white.text-dark-900
+      //- Header
+      .text-center.border-b-2.border-dark-200.pb-6.mb-6
+        .flex.items-center.justify-center.gap-4.mb-4
+          img.w-16.h-16(src="/images/stamp1.png" alt="Seal")
+          div
+            h1.text-2xl.font-bold.text-dark-900 REPUBLIC OF CAMEROON
+            p.text-sm.text-dark-600 Peace - Work - Fatherland
+          img.w-16.h-16(src="/images/stamp2.png" alt="Seal")
+        h2.text-xl.font-bold.text-green-700.mt-4 CERTIFICATE OF RESIDENCY
+        if residency && residency.certificateNumber
+          p.text-sm.text-dark-500.mt-2 Certificate No: #{residency.certificateNumber}
+
+      if residency
+        //- Certificate Body
+        .text-center.py-8.px-4
+          p.text-lg.leading-relaxed
+            | The undersigned, Mayor of 
+            strong= residency.residenceMunicipality
+            | , hereby certifies that:
+
+        .bg-green-50.p-6.rounded-xl.mb-6
+          .text-center
+            p.text-2xl.font-bold.text-green-800= residency.applicantGivenname + ' ' + residency.applicantSurname
+            p.text-dark-600.mt-2 Born on #{residency.applicantBornOn ? new Date(residency.applicantBornOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'} at #{residency.applicantBornAt}
+            p.text-dark-600 Nationality: #{residency.applicantNationality}
+            p.text-dark-600 National ID: #{residency.applicantIdNum}
+
+        .text-center.py-4
+          p.text-lg.leading-relaxed
+            | Is a bona fide resident of:
+
+        .bg-gray-50.p-6.rounded-xl.mb-6
+          .grid.gap-4(class="md:grid-cols-2")
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Address
+              p.font-semibold= residency.residenceAddress
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Quarter/Neighborhood
+              p.font-semibold= residency.residenceQuarter
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Municipality
+              p.font-semibold= residency.residenceMunicipality
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Resident Since
+              p.font-semibold= residency.residenceSince ? new Date(residency.residenceSince).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+
+        .text-center.py-4
+          p.text-lg
+            | This certificate is issued for the purpose of: 
+            strong= residency.purpose
+
+        //- Validity
+        .bg-yellow-50.border.border-yellow-200.p-4.rounded-xl.mb-6.text-center
+          p.text-sm.text-yellow-800
+            | This certificate is valid for 
+            strong three (3) months 
+            | from the date of issue.
+          if residency.validUntil
+            p.text-sm.text-yellow-800.mt-1
+              | Valid until: 
+              strong= new Date(residency.validUntil).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+        //- Signatures Section
+        .border-t-2.border-dark-200.pt-8.mt-8
+          .grid.gap-8(class="md:grid-cols-2")
+            div
+              p.text-xs.text-dark-500.uppercase Issued On
+              p.font-semibold= residency.issuedOn ? new Date(residency.issuedOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+              p.text-xs.text-dark-500.uppercase.mt-4 At
+              p.font-semibold= residency.residenceMunicipality
+            .text-right
+              p.text-xs.text-dark-500.uppercase.mb-16 Mayor's Signature & Official Seal
+              .border-t.border-dark-300.pt-2
+                p.text-sm.font-semibold.text-dark-800 The Mayor
+                p.text-sm.text-dark-600= residency.residenceMunicipality + ' Municipality'
+
+        //- Footer Note
+        .mt-8.p-4.bg-gray-100.rounded-lg.text-center
+          p.text-xs.text-dark-500 This certificate is issued in accordance with the laws of the Republic of Cameroon.
+          p.text-xs.text-dark-500.mt-1 Any falsification of this document is punishable by law.
+
+      else
+        .text-center.py-12
+          p.text-dark-500 No residency certificate data available

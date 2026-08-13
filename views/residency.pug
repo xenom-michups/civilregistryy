@@ -1,0 +1,82 @@
+extends layout
+
+block content
+  .max-w-5xl.mx-auto
+    .flex.items-center.justify-between.mb-8
+      div
+        h2.text-2xl.font-bold Issue Residency Certificate
+        p.text-dark-400.mt-1 Fill in the details to create a residency certificate
+
+    form#residencyForm.space-y-8
+      //- Applicant Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z")
+          h3.text-lg.font-semibold Applicant Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div
+            label.label(for="applicant_surname") Surname *
+            input#applicant_surname.input(type="text" name="applicant_surname" required)
+          div
+            label.label(for="applicant_givenname") Given Name *
+            input#applicant_givenname.input(type="text" name="applicant_givenname" required)
+          div
+            label.label(for="applicant_born_on") Date of Birth *
+            input#applicant_born_on.input(type="date" name="applicant_born_on" required)
+          div
+            label.label(for="applicant_born_at") Place of Birth *
+            input#applicant_born_at.input(type="text" name="applicant_born_at" required)
+          div
+            label.label(for="applicant_nationality") Nationality
+            input#applicant_nationality.input(type="text" name="applicant_nationality" value="Cameroon")
+          div
+            label.label(for="applicant_occupation") Occupation
+            input#applicant_occupation.input(type="text" name="applicant_occupation")
+          div
+            label.label(for="applicant_id_num") National ID Number *
+            input#applicant_id_num.input(type="text" name="applicant_id_num" required)
+
+      //- Residence Information
+      .card.p-6
+        .flex.items-center.gap-3.mb-6
+          div(class="w-10 h-10 bg-primary-600/20 rounded-lg flex items-center justify-center")
+            svg.w-5.h-5.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+          h3.text-lg.font-semibold Residence Information
+
+        .grid.gap-6(class="md:grid-cols-2")
+          div(class="md:col-span-2")
+            label.label(for="residence_address") Full Address *
+            input#residence_address.input(type="text" name="residence_address" required)
+          div
+            label.label(for="residence_quarter") Quarter/Neighborhood *
+            input#residence_quarter.input(type="text" name="residence_quarter" required)
+          div
+            label.label(for="residence_municipality") Municipality *
+            input#residence_municipality.input(type="text" name="residence_municipality" required)
+          div
+            label.label(for="residence_since") Resident Since *
+            input#residence_since.input(type="date" name="residence_since" required)
+          div
+            label.label(for="purpose") Purpose of Certificate *
+            select#purpose.input(name="purpose" required)
+              option(value="") Select purpose
+              option(value="Employment") Employment
+              option(value="School Enrollment") School Enrollment
+              option(value="Bank Account") Bank Account
+              option(value="Legal Proceedings") Legal Proceedings
+              option(value="Travel/Visa") Travel/Visa
+              option(value="Other") Other
+
+      .flex.items-center.justify-end.gap-4
+        button.btn.btn-secondary(type="reset") Clear Form
+        button.btn.btn-primary.px-8(type="submit")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          span Issue Certificate
+
+block scripts
+  script(src="/js/residency-reg.js")

@@ -1,0 +1,68 @@
+@media print {
+  /* Hide non-printable elements */
+  nav, header, footer, .no-print, .btn, aside, .sidebar {
+    display: none !important;
+  }
+  
+  /* Reset page margins */
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+  
+  /* Reset body styles */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  /* Certificate container */
+  .certificate-container, .card {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    max-width: 100% !important;
+  }
+  
+  /* Ensure images print */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Avoid page breaks inside elements */
+  .grid, .section, .mb-6 {
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure text is black */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    color: black !important;
+  }
+  
+  /* Background colors for print */
+  .bg-dark-50, .bg-blue-50, .bg-pink-50, .bg-gray-50, .bg-green-50 {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Links */
+  a {
+    text-decoration: none;
+    color: black !important;
+  }
+  
+  /* Main content full width */
+  main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .max-w-4xl {
+    max-width: 100% !important;
+  }
+}

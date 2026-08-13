@@ -1,0 +1,254 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Request Certificate | Civil Registry System
+    link(rel="stylesheet" href="/styles/tailwind.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet")
+    link(rel="icon" href="/images/Favicon.png" type="image/png")
+
+  body.bg-dark-950.text-white.min-h-screen
+    nav.fixed.top-0.left-0.right-0.z-50.glass.border-b.border-dark-800
+      .max-w-7xl.mx-auto.px-6.py-4
+        .flex.items-center.justify-between
+          a.flex.items-center.gap-3(href="/")
+            .w-10.h-10.bg-primary-600.rounded-xl.flex.items-center.justify-center
+              svg.w-6.h-6.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            span.text-xl.font-bold Civil Registry System
+          .flex.items-center.gap-4
+            a.text-dark-400.text-sm(href="/" class="hover:text-white") Home
+            a.text-dark-400.text-sm(href="/client" class="hover:text-white") Lookup
+            a.text-dark-400.text-sm(href="/track-request" class="hover:text-white") Track Request
+            if user
+              a.btn.btn-secondary(href="/client-dashboard") Dashboard
+              button#logOutBtn.btn.btn-outline Logout
+            else
+              a.btn.btn-primary(href="/login") Login or Register
+
+    .pt-24.pb-16.px-6
+      .max-w-3xl.mx-auto
+        .text-center.mb-12
+          div(class="w-20 h-20 bg-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6")
+            svg.w-10.h-10.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+          h1.text-4xl.font-bold.mb-4 Request Certificate Online
+          p.text-xl.text-dark-400 Submit your certificate request and track its status
+
+        .card.p-8
+          form#requestForm.space-y-8
+            //- Certificate Type
+            div
+              label.label Certificate Type *
+              .grid.gap-4(class="md:grid-cols-2")
+                label.cursor-pointer
+                  input.hidden.peer(type="radio" name="certificate_type" value="birth" required)
+                  .p-4.border-2.border-dark-700.rounded-xl.transition-all(class="peer-checked:border-primary-500 peer-checked:bg-primary-500/10 hover:border-dark-600")
+                    .flex.items-center.gap-3
+                      div(class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center")
+                        svg.w-5.h-5.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+                      span.font-medium Birth Certificate
+                label.cursor-pointer
+                  input.hidden.peer(type="radio" name="certificate_type" value="death")
+                  .p-4.border-2.border-dark-700.rounded-xl.transition-all(class="peer-checked:border-primary-500 peer-checked:bg-primary-500/10 hover:border-dark-600")
+                    .flex.items-center.gap-3
+                      div(class="w-10 h-10 bg-gray-600/20 rounded-lg flex items-center justify-center")
+                        svg.w-5.h-5.text-gray-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+                      span.font-medium Death Certificate
+                label.cursor-pointer
+                  input.hidden.peer(type="radio" name="certificate_type" value="marriage")
+                  .p-4.border-2.border-dark-700.rounded-xl.transition-all(class="peer-checked:border-primary-500 peer-checked:bg-primary-500/10 hover:border-dark-600")
+                    .flex.items-center.gap-3
+                      div(class="w-10 h-10 bg-pink-600/20 rounded-lg flex items-center justify-center")
+                        svg.w-5.h-5.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+                      span.font-medium Marriage Certificate
+                label.cursor-pointer
+                  input.hidden.peer(type="radio" name="certificate_type" value="residency")
+                  .p-4.border-2.border-dark-700.rounded-xl.transition-all(class="peer-checked:border-primary-500 peer-checked:bg-primary-500/10 hover:border-dark-600")
+                    .flex.items-center.gap-3
+                      div(class="w-10 h-10 bg-green-600/20 rounded-lg flex items-center justify-center")
+                        svg.w-5.h-5.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+                      span.font-medium Residency Certificate
+
+            //- Requester Information
+            .space-y-4
+              h3.text-lg.font-semibold Your Information
+              if user
+                p.text-dark-400.text-sm.mb-2 Fields auto-filled from your account
+              .grid.gap-4(class="md:grid-cols-2")
+                div
+                  label.label(for="requester_name") Full Name *
+                  input#requester_name.input(type="text" name="requester_name" required value=(user ? user.name : ''))
+                div
+                  label.label(for="requester_email") Email Address *
+                  input#requester_email.input(type="email" name="requester_email" required value=(user ? user.email : ''))
+                div
+                  label.label(for="requester_phone") Phone Number *
+                  input#requester_phone.input(type="tel" name="requester_phone" required value=(user ? user.phone : ''))
+                div
+                  label.label(for="requester_id_num") National ID Number *
+                  input#requester_id_num.input(type="text" name="requester_id_num" required value=(user ? user.idNumber : ''))
+                div(class="md:col-span-2")
+                  label.label(for="requester_address") Address *
+                  input#requester_address.input(type="text" name="requester_address" required value=(user ? user.address : ''))
+
+            //- Subject Information
+            .space-y-4
+              h3.text-lg.font-semibold Certificate Subject Information
+              .grid.gap-4(class="md:grid-cols-2")
+                div
+                  label.label(for="subject_name") Subject's Full Name *
+                  input#subject_name.input(type="text" name="subject_name" required placeholder="Person the certificate is for")
+                div
+                  label.label(for="subject_born_on") Subject's Date of Birth
+                  input#subject_born_on.input(type="date" name="subject_born_on")
+                div
+                  label.label(for="relationship") Your Relationship *
+                  select#relationship.input(name="relationship" required)
+                    option(value="") Select relationship
+                    option(value="Self") Self
+                    option(value="Parent") Parent
+                    option(value="Child") Child
+                    option(value="Spouse") Spouse
+                    option(value="Sibling") Sibling
+                    option(value="Legal Guardian") Legal Guardian
+                    option(value="Authorized Representative") Authorized Representative
+                div
+                  label.label(for="purpose") Purpose of Request *
+                  select#purpose.input(name="purpose" required)
+                    option(value="") Select purpose
+                    option(value="Personal Records") Personal Records
+                    option(value="Legal Proceedings") Legal Proceedings
+                    option(value="Employment") Employment
+                    option(value="School Enrollment") School Enrollment
+                    option(value="Travel/Visa") Travel/Visa
+                    option(value="Insurance") Insurance
+                    option(value="Other") Other
+
+            div
+              label.label(for="additional_info") Additional Information
+              textarea#additional_info.input(name="additional_info" rows="3" placeholder="Any additional details that may help locate the record...")
+
+            //- Signature
+            .space-y-4
+              h3.text-lg.font-semibold Digital Signature
+              p.text-dark-400.text-sm Sign below to confirm your request
+              .border-2.border-dark-700.rounded-xl.bg-dark-900.p-4
+                canvas#signatureCanvas.w-full.h-32.bg-white.rounded-lg.cursor-crosshair
+              .flex.gap-4.mt-2
+                button#clearSignature.btn.btn-secondary.text-sm(type="button") Clear Signature
+
+            button.btn.btn-primary.w-full.py-4(type="submit")
+              svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+              span Submit Request
+
+        #successMessage.hidden.mt-8.card.p-8.text-center
+          div(class="w-16 h-16 bg-green-600/20 rounded-full flex items-center justify-center mx-auto mb-4")
+            svg.w-8.h-8.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          h3.text-xl.font-bold.mb-2 Request Submitted Successfully!
+          p.text-dark-400.mb-4 Your request number is:
+          p#requestNumber.text-2xl.font-mono.text-primary-500.mb-6
+          p.text-dark-400.text-sm Save this number to track your request status.
+          a.btn.btn-primary(href="/track-request") Track Your Request
+
+    footer.bg-dark-900.border-t.border-dark-800.py-8
+      .max-w-7xl.mx-auto.px-6.text-center
+        p.text-dark-500.text-sm © #{new Date().getFullYear()} Civil Registry System. All rights reserved.
+
+    script(src="/js/login.js")
+    script.
+      // Signature canvas
+      const canvas = document.getElementById('signatureCanvas');
+      const ctx = canvas.getContext('2d');
+      let isDrawing = false;
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = 128;
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseout', stopDrawing);
+      canvas.addEventListener('touchstart', handleTouch);
+      canvas.addEventListener('touchmove', handleTouchMove);
+      canvas.addEventListener('touchend', stopDrawing);
+
+      function startDrawing(e) {
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+      }
+
+      function draw(e) {
+        if (!isDrawing) return;
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+      }
+
+      function handleTouch(e) {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        isDrawing = true;
+        ctx.beginPath();
+        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      }
+
+      function handleTouchMove(e) {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        ctx.stroke();
+      }
+
+      document.getElementById('clearSignature').addEventListener('click', () => {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      });
+
+      // Form submission
+      document.getElementById('requestForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData);
+        data.requester_signature = canvas.toDataURL();
+
+        try {
+          const res = await fetch('/api/requests/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+          const result = await res.json();
+
+          if (result.status === 'success') {
+            document.getElementById('requestForm').parentElement.classList.add('hidden');
+            document.getElementById('successMessage').classList.remove('hidden');
+            document.getElementById('requestNumber').textContent = result.data.request.requestNumber;
+          } else {
+            alert('Error: ' + result.message);
+          }
+        } catch (err) {
+          alert('Error submitting request. Please try again.');
+        }
+      });

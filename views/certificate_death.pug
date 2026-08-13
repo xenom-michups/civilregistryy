@@ -1,0 +1,117 @@
+extends layout
+
+block content
+  .max-w-4xl.mx-auto
+    .flex.items-center.justify-between.mb-6
+      a.btn.btn-secondary(href="/dashboard")
+        svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18")
+        span Back to Dashboard
+      .flex.gap-3.no-print
+        a.btn.btn-secondary(href="/print-ready-death" target="_blank")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z")
+          span Print View
+        button.btn.btn-primary(onclick="window.print()")
+          svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z")
+          span Print
+
+    .card.p-8.bg-white.text-dark-900
+      //- Header
+      .text-center.border-b-2.border-dark-200.pb-6.mb-6
+        .flex.items-center.justify-center.gap-4.mb-4
+          img.w-16.h-16(src="/images/stamp1.png" alt="Seal")
+          div
+            h1.text-2xl.font-bold.text-dark-900 REPUBLIC OF CAMEROON
+            p.text-sm.text-dark-600 Peace - Work - Fatherland
+          img.w-16.h-16(src="/images/stamp2.png" alt="Seal")
+        h2.text-xl.font-bold.text-gray-700.mt-4 DEATH CERTIFICATE
+        if death && death.certificateNumber
+          p.text-sm.text-dark-500.mt-2 Certificate No: #{death.certificateNumber}
+
+      if death
+        //- Deceased Information
+        .mb-6
+          h3.text-lg.font-semibold.text-gray-700.mb-4 Deceased Information
+          .grid.gap-4(class="md:grid-cols-2")
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Full Name
+              p.font-semibold= death.deceasedGivenname + ' ' + death.deceasedSurname
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Sex
+              p.font-semibold.capitalize= death.deceasedSex
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Date of Birth
+              p.font-semibold= death.deceasedBornOn ? new Date(death.deceasedBornOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Place of Birth
+              p.font-semibold= death.deceasedBornAt
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Nationality
+              p.font-semibold= death.deceasedNationality
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Last Residence
+              p.font-semibold= death.deceasedResidence
+
+        //- Death Details
+        .mb-6.p-4.bg-gray-100.rounded-xl
+          h3.text-lg.font-semibold.text-gray-700.mb-4 Death Details
+          .grid.gap-4(class="md:grid-cols-2")
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Date of Death
+              p.font-semibold= death.deathDate ? new Date(death.deathDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Time of Death
+              p.font-semibold= death.deathTime || 'Not specified'
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Place of Death
+              p.font-semibold= death.deathPlace
+            .p-3.bg-white.rounded-lg
+              p.text-xs.text-dark-500.uppercase Cause of Death
+              p.font-semibold= death.causeOfDeath
+
+        //- Family Information
+        .mb-6
+          h3.text-lg.font-semibold.text-gray-700.mb-4 Family Information
+          .grid.gap-4(class="md:grid-cols-3")
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Father's Name
+              p.font-semibold= death.fatherName || 'N/A'
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Mother's Name
+              p.font-semibold= death.motherName || 'N/A'
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Spouse's Name
+              p.font-semibold= death.spouseName || 'N/A'
+
+        //- Declarant Information
+        .mb-6
+          h3.text-lg.font-semibold.text-gray-700.mb-4 Declarant Information
+          .grid.gap-4(class="md:grid-cols-2")
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Declarant Name
+              p.font-semibold= death.declarantName
+            .p-3.bg-gray-50.rounded-lg
+              p.text-xs.text-dark-500.uppercase Relationship
+              p.font-semibold= death.declarantRelationship
+
+        //- Signatures Section
+        .border-t-2.border-dark-200.pt-6.mt-6
+          .grid.gap-8(class="md:grid-cols-3")
+            div
+              p.text-xs.text-dark-500.uppercase Drawn Up On
+              p.font-semibold= death.drawnUpOn ? new Date(death.drawnUpOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .text-center
+              p.text-xs.text-dark-500.uppercase.mb-12 Declarant's Signature
+              .border-t.border-dark-300.pt-2.mx-8
+                p.text-sm.text-dark-600= death.declarantName
+            .text-right
+              p.text-xs.text-dark-500.uppercase.mb-12 Mayor's Signature & Seal
+              .border-t.border-dark-300.pt-2
+                p.text-sm.text-dark-600 Municipal Authority
+
+      else
+        .text-center.py-12
+          p.text-dark-500 No death certificate data available

@@ -1,231 +1,138 @@
 doctype html
-head
-  meta(charset='UTF-8')
-  meta(http-equiv='X-UA-Compatible' content='IE=edge')
-  meta(name='viewport' content='width=device-width, initial-scale=1.0')
-  title Document
-  link(rel='icon' href='' type='image/png')
-  link(rel='stylesheet' href='styles/tailwind.css')
-.flex.flex-col.h-screen.mx-auto(class='w-5/6')
-  .grid.grid-cols-3.justify-between.items-center.space-x-2
-    .flex.flex-col.h-full.items-center.p-6.text-l
-      .flex.flex-col.items-center
-        p PROVINCE
-        .border-b-4.border-dotted.border-gray-800.px-2
-          p.text-3xl North West
-      .flex.flex-col.items-center
-        p DEPARTMENT
-        .border-b-4.border-dotted.border-gray-800.px-10
-          p.text-3xl Mezam
-      .flex.flex-col.items-center
-        p SUBDIVISION
-        .border-b-4.border-dotted.border-gray-800.px-12
-          p.text-3xl Santa
-    .flex.flex-col.items-center.h-full.p-6.text-xl
-      .flex.flex-col.items-center
-        p.uppercase.font-semibold Republic of Cameroon
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    title Marriage Certificate - Print
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Times New Roman', serif; padding: 40px; background: white; color: #1a1a1a; }
+      .certificate { max-width: 900px; margin: 0 auto; border: 3px double #be185d; padding: 40px; }
+      .header { text-align: center; border-bottom: 2px solid #be185d; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+      .header h2 { font-size: 20px; color: #be185d; margin-top: 15px; }
+      .header p { font-size: 12px; color: #666; }
+      .seals { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
+      .seals img { width: 60px; height: 60px; }
+      .couple { text-align: center; padding: 20px; background: linear-gradient(to right, #eff6ff, #fdf2f8, #eff6ff); margin-bottom: 25px; }
+      .couple-names { display: flex; justify-content: center; align-items: center; gap: 20px; }
+      .couple-name { font-size: 22px; font-weight: bold; }
+      .couple-name.groom { color: #1d4ed8; }
+      .couple-name.bride { color: #be185d; }
+      .heart { font-size: 24px; color: #be185d; }
+      .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+      .section { margin-bottom: 20px; }
+      .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+      .section-title.groom { color: #1d4ed8; }
+      .section-title.bride { color: #be185d; }
+      .field { margin-bottom: 8px; }
+      .field-label { font-size: 10px; color: #666; text-transform: uppercase; }
+      .field-value { font-size: 13px; font-weight: 500; }
+      .marriage-details { background: #f0fdf4; padding: 15px; margin-top: 20px; }
+      .marriage-details .section-title { color: #166534; }
+      .details-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+      .footer { border-top: 2px solid #be185d; padding-top: 20px; margin-top: 30px; display: flex; justify-content: space-between; }
+      .signature { text-align: right; }
+      .signature-line { border-top: 1px solid #333; width: 200px; margin-top: 50px; padding-top: 5px; }
+      @media print { body { padding: 0; } .certificate { border: none; } }
+
+  body
+    .certificate
+      .header
+        .seals
+          img(src="/images/stamp1.png" alt="Seal")
+          img(src="/images/stamp2.png" alt="Seal")
+        h1 REPUBLIC OF CAMEROON
         p Peace - Work - Fatherland
-    .flex.flex-col.h-full.items-center.p-6.text-l
-      .flex.flex-col.items-center
-        p PROVINCE
-        .border-b-4.border-dotted.border-gray-800.px-2
-          p.text-3xl North West
-      .flex.flex-col.items-center
-        p DEPARTMENT
-        .border-b-4.border-dotted.border-gray-800.px-10
-          p.text-3xl Mezam
-      .flex.flex-col.items-center
-        p SUBDIVISION
-        .border-b-4.border-dotted.border-gray-800.px-12
-          p.text-3xl Santa
-  .space-y-2.pb-8
-    .flex.flex-col.items-center
-      h3.text-xl.font-semibold CIVIL STATUS REGISTRATION CENTRE
-      p
-        | of 
-        span.pl-4.text-3xl.border-b-4.border-dotted.border-gray-800 Santa Rurul Council
-    .flex.flex-row.justify-center.space-x-2
-      div
-        h3.text-2xl.font-medium Main Civil status registry of Attachment(For secondary civil registry)
-      p
-        span.pl-8.text-3xl.border-b-4.border-dotted.border-gray-800 Santa Rural Council
-    .flex.flex-col.items-center.space-x-12
-      .text-3xl
-        h2.font-semibold MARRIAGE CERTIFICATE
-      div
-        p
-          | No 
-          span.pl-4.border-b-4.border-dotted.border-gray-800.text-2xl 786/98
-  .flex.ml-12.flex-col.space-y-4.items-start.mx-auto
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Marriage of
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p #{marriage.groom_fullname}
-    .flex.flex-row.space-x-20.h-8.text-l.text-xl
-      p.font-semibold And of
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p #{marriage.bride_fullname}
-    .flex.flex-row.space-x-20.h-8.text-l.text-xl
-      p.font-semibold One the
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.py-2.px-32
-        p=marriage.drawn_up_on.toLocaleDateString()
-    p.text-xl.px-4 Before us appeared publicly
-    // groom
-    .flex.flex-row.space-x-6.h-2.text-l.text-xl
-      p.font-semibold Mr
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.groom_fullname
-    .flex.flex-row.space-x-6.py-4.h-8.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Born on the
-        .pl-8.text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800
-          p=marriage.groom_born_on.toLocaleDateString()
-      .flex
-        p.font-semibold At
-        .pl-8.text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800
-          p=marriage.groom_place_birth
-    .flex.flex-row.space-x-6.h-14.py-6.text-l.text-xl
-      p.font-semibold Profession
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.groom_profession
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Nationality
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.groom_nationality
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Reference document
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.groom_id_num
-    p.text-xl.px-4
-      | (National identity card number or Referencs of the Birth Certificate or References of the document attesting the nationality)
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Resident At
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.groom_resident_at
-    .flex.grid-cols-2.space-x-6.h-8.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Son of
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.groom_father_name
-      .flex
-        p.font-semibold and of
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.groom_mother_name
-    // Bride
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Mrs
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.bride_fullname
-    .flex.grid-cols-2.space-x-6.h-8.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Born on the
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.bride_born_on.toLocaleDateString()
-      .flex
-        p.font-semibold At
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.bride_place_birth
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Profession
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.bride_profession
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Nationality
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.bride_nationality
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Reference document
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.bride_id_num
-    p.text-xl.px-4
-      | (National identity card number or Referencs of the Birth Certificate or References of the document attesting the nationality)
-    .flex.flex-row.space-x-6.h-8.text-l.text-xl
-      p.font-semibold Resident At
-      .text-3xl.flex.flex-col.justify-end.h-8.border-dotted.border-b-4.border-gray-800.px-32
-        p=marriage.bride_resident_at
-    .flex.grid-cols-2.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Daugther of
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-8
-          p=marriage.bride_father_name
-      .flex
-        p.font-semibold and of
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-8
-          p=marriage.bride_mother_name
-    .flex.flex-col.space-y-2.text-l.text-xl
-      p.font-semibold
-        | The bride and bridegroom state that the matrimonial regime is (separate or joint ownership of property)
-      .text-3xl.h-10.border-dotted.border-b-4.border-gray-800
-        p #{marriage.matrimonial_regime} ownership of property
-    .flex.flex-row.space-x-16.text-l.text-xl
-      p.font-semibold Type of marriage(polygamy or monogamy)
-      .text-3xl.flex.flex-col.h-10.border-dotted.border-b-4.border-gray-800.px-20
-        p=marriage.marriage_type
-    .flex.flex-row.space-x-16.text-l.text-xl
-      p.font-semibold No objections to marriage have been recorded
-      .text-3xl.flex.flex-col.h-10.border-dotted.border-b-4.border-gray-800.px-20
-        p=marriage.objections
-    .flex.grid-cols-2.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Mr
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.groom_fullname
-      .flex
-        p.font-semibold Miss
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p=marriage.bride_fullname
-    p.text-xl.font-semibold.px-4
-      | Both declared they wish to be husband and wife and in accordance with the law, we pronounce that they are united by the marriage
-    p.text-xl.font-semibold.px-4 In the presence of
-    .flex.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Mr
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-16
-          p=marriage.groom_family_head
-      .flex
-        p.font-semibold Head of the family of the husband
-    .flex.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold and of Mr
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-16
-          p=marriage.bride_family_head
-      .flex
-        p.font-semibold Head of the family of the wife
-    p.text-xl.font-semibold.px-4 Who agree to the marriage and of
-    .flex.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold Mr
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-16
-          p=marriage.groom_witness_name
-      .flex
-        p.font-semibold Witness of the husband
-    .flex.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold and of Mr
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-16
-          p=marriage.bride_witness_name
-      .flex
-        p.font-semibold Witness of the wife
-    .flex.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold This certificate was drawn by us
-        .text-3xl.h-10.border-dotted.bg.border-b-4.border-gray-800.px-12
-          p Buea Municipal Council
-      .flex
-        p.font-semibold Civil Status Registrar
-    .flex.flex-rows.space-x-6.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold In the presence of 
-        .text-3xl.h-10.border-dotted.border-b-4.border-gray-800.px-12
-          p Pius Junior Khan
-      .flex
-        p.font-semibold Secretary
-    .flex.space-x-6.h-8.pb-16.text-l.text-xl
-      .flex.flex-rows
-        p.font-semibold At
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.pl-12
-          p Azamah Junior Khan
-      .flex
-        p.font-semibold on the
-        .text-3xl.flex.flex-col.items-center.h-10.border-dotted.border-b-4.border-gray-800.pl-12
-          p Azamah Junior Khan
+        h2 MARRIAGE CERTIFICATE
+        if marriage && (marriage.certificateNumber || marriage.certificate_number)
+          p Certificate No: #{marriage.certificateNumber || marriage.certificate_number}
+
+      if marriage
+        .couple
+          .couple-names
+            .couple-name.groom= (marriage.groomGivenName || marriage.groom_given_name) + ' ' + (marriage.groomSurname || marriage.groom_surname)
+            .heart ❤
+            .couple-name.bride= (marriage.brideGivenName || marriage.bride_given_name) + ' ' + (marriage.brideSurname || marriage.bride_surname)
+
+        .columns
+          .column
+            .section
+              .section-title.groom Groom's Information
+              .field
+                .field-label Date of Birth
+                .field-value= (marriage.groomBornOn || marriage.groom_born_on) ? new Date(marriage.groomBornOn || marriage.groom_born_on).toLocaleDateString() : '-'
+              .field
+                .field-label Place of Birth
+                .field-value= marriage.groomPlaceBirth || marriage.groom_place_birth
+              .field
+                .field-label Residence
+                .field-value= marriage.groomResidentAt || marriage.groom_resident_at
+              .field
+                .field-label Profession
+                .field-value= marriage.groomProfession || marriage.groom_profession
+              .field
+                .field-label Nationality
+                .field-value= marriage.groomNationality || marriage.groom_nationality
+              .field
+                .field-label National ID
+                .field-value= marriage.groomIdNum || marriage.groom_id_num
+              .field
+                .field-label Father's Name
+                .field-value= marriage.groomFatherName || marriage.groom_father_name
+              .field
+                .field-label Mother's Name
+                .field-value= marriage.groomMotherName || marriage.groom_mother_name
+              .field
+                .field-label Witness
+                .field-value= marriage.groomWitnessName || marriage.groom_witness_name
+
+          .column
+            .section
+              .section-title.bride Bride's Information
+              .field
+                .field-label Date of Birth
+                .field-value= (marriage.brideBornOn || marriage.bride_born_on) ? new Date(marriage.brideBornOn || marriage.bride_born_on).toLocaleDateString() : '-'
+              .field
+                .field-label Place of Birth
+                .field-value= marriage.bridePlaceBirth || marriage.bride_place_birth
+              .field
+                .field-label Residence
+                .field-value= marriage.brideResidentAt || marriage.bride_resident_at
+              .field
+                .field-label Profession
+                .field-value= marriage.brideProfession || marriage.bride_profession
+              .field
+                .field-label Nationality
+                .field-value= marriage.brideNationality || marriage.bride_nationality
+              .field
+                .field-label National ID
+                .field-value= marriage.brideIdNum || marriage.bride_id_num
+              .field
+                .field-label Father's Name
+                .field-value= marriage.brideFatherName || marriage.bride_father_name
+              .field
+                .field-label Mother's Name
+                .field-value= marriage.brideMotherName || marriage.bride_mother_name
+              .field
+                .field-label Witness
+                .field-value= marriage.brideWitnessName || marriage.bride_witness_name
+
+        .marriage-details
+          .section-title Marriage Details
+          .details-grid
+            .field
+              .field-label Matrimonial Regime
+              .field-value= marriage.matrimonialRegime || marriage.matrimonial_regime
+            .field
+              .field-label Marriage Type
+              .field-value= marriage.marriageType || marriage.marriage_type
+            .field
+              .field-label Objections
+              .field-value= marriage.objections
+
+        .footer
+          .field
+            .field-label Drawn Up On
+            .field-value= (marriage.drawnUpOn || marriage.drawn_up_on) ? new Date(marriage.drawnUpOn || marriage.drawn_up_on).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+          .signature
+            .signature-line Civil Registry Officer

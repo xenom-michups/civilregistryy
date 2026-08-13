@@ -1,0 +1,114 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    title Death Certificate - Print
+    style.
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: 'Times New Roman', serif; padding: 40px; background: white; color: #1a1a1a; }
+      .certificate { max-width: 800px; margin: 0 auto; border: 3px double #374151; padding: 40px; }
+      .header { text-align: center; border-bottom: 2px solid #374151; padding-bottom: 20px; margin-bottom: 20px; }
+      .header h1 { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+      .header h2 { font-size: 20px; color: #374151; margin-top: 15px; }
+      .header p { font-size: 12px; color: #666; }
+      .seals { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; }
+      .seals img { width: 60px; height: 60px; }
+      .section { margin-bottom: 20px; }
+      .section-title { font-size: 14px; font-weight: bold; color: #374151; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+      .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+      .field { margin-bottom: 10px; }
+      .field-label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 3px; }
+      .field-value { font-size: 14px; font-weight: 500; }
+      .death-details { background: #f3f4f6; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+      .signatures { border-top: 2px solid #374151; padding-top: 30px; margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+      .signature-block { text-align: center; }
+      .signature-line { border-top: 1px solid #333; margin-top: 60px; padding-top: 5px; }
+      .signature-label { font-size: 10px; color: #666; text-transform: uppercase; }
+      @media print { body { padding: 0; } .certificate { border: none; } }
+
+  body
+    .certificate
+      .header
+        .seals
+          img(src="/images/stamp1.png" alt="Seal")
+          img(src="/images/stamp2.png" alt="Seal")
+        h1 REPUBLIC OF CAMEROON
+        p Peace - Work - Fatherland
+        h2 DEATH CERTIFICATE
+        if death && death.certificateNumber
+          p Certificate No: #{death.certificateNumber}
+
+      if death
+        .section
+          .section-title Deceased Information
+          .grid
+            .field
+              .field-label Full Name
+              .field-value= death.deceasedGivenname + ' ' + death.deceasedSurname
+            .field
+              .field-label Sex
+              .field-value= death.deceasedSex
+            .field
+              .field-label Date of Birth
+              .field-value= death.deceasedBornOn ? new Date(death.deceasedBornOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .field
+              .field-label Place of Birth
+              .field-value= death.deceasedBornAt
+            .field
+              .field-label Nationality
+              .field-value= death.deceasedNationality
+            .field
+              .field-label Last Residence
+              .field-value= death.deceasedResidence
+
+        .death-details
+          .section-title Death Details
+          .grid
+            .field
+              .field-label Date of Death
+              .field-value= death.deathDate ? new Date(death.deathDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+            .field
+              .field-label Time of Death
+              .field-value= death.deathTime || 'Not specified'
+            .field
+              .field-label Place of Death
+              .field-value= death.deathPlace
+            .field
+              .field-label Cause of Death
+              .field-value= death.causeOfDeath
+
+        .section
+          .section-title Family Information
+          .grid-3
+            .field
+              .field-label Father's Name
+              .field-value= death.fatherName || 'N/A'
+            .field
+              .field-label Mother's Name
+              .field-value= death.motherName || 'N/A'
+            .field
+              .field-label Spouse's Name
+              .field-value= death.spouseName || 'N/A'
+
+        .section
+          .section-title Declarant Information
+          .grid
+            .field
+              .field-label Declarant Name
+              .field-value= death.declarantName
+            .field
+              .field-label Relationship to Deceased
+              .field-value= death.declarantRelationship
+
+        .signatures
+          .signature-block
+            .field
+              .field-label Drawn Up On
+              .field-value= death.drawnUpOn ? new Date(death.drawnUpOn).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '-'
+          .signature-block
+            .signature-label Declarant's Signature
+            .signature-line= death.declarantName
+          .signature-block
+            .signature-label Mayor's Signature & Seal
+            .signature-line Civil Registry Officer

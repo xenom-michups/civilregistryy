@@ -1,102 +1,110 @@
+// Marriage Registration Form Handler
+const marriageForm = document.getElementById('marriageForm');
 
+if (marriageForm) {
+  marriageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// Elements
+    const formData = new FormData(marriageForm);
+    const data = {
+      groomGivenName: formData.get('groom_given_name'),
+      groomSurname: formData.get('groom_surname'),
+      groomBornOn: formData.get('groom_born_on'),
+      groomPlaceBirth: formData.get('groom_place_birth'),
+      groomResidentAt: formData.get('groom_resident_at'),
+      groomProfession: formData.get('groom_profession'),
+      groomNationality: formData.get('groom_nationality'),
+      groomIdNum: formData.get('groom_id_num'),
+      groomFatherName: formData.get('groom_father_name'),
+      groomMotherName: formData.get('groom_mother_name'),
+      groomFamilyHead: formData.get('groom_family_head'),
+      groomWitnessName: formData.get('groom_witness_name'),
+      brideGivenName: formData.get('bride_given_name'),
+      brideSurname: formData.get('bride_surname'),
+      brideBornOn: formData.get('bride_born_on'),
+      bridePlaceBirth: formData.get('bride_place_birth'),
+      brideResidentAt: formData.get('bride_resident_at'),
+      brideProfession: formData.get('bride_profession'),
+      brideNationality: formData.get('bride_nationality'),
+      brideIdNum: formData.get('bride_id_num'),
+      brideFatherName: formData.get('bride_father_name'),
+      brideMotherName: formData.get('bride_mother_name'),
+      brideFamilyHead: formData.get('bride_family_head'),
+      brideWitnessName: formData.get('bride_witness_name'),
+      matrimonialRegime: formData.get('matrimonial_regime'),
+      marriageType: formData.get('marriage_type'),
+      objections: formData.get('objections'),
+    };
 
-const form = document.getElementById('marriage-form');
-console.log(form)
+    const submitBtn = marriageForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = `
+      <svg class="w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <span>Registering...</span>
+    `;
+    submitBtn.disabled = true;
 
-// Delegation
-
-
-const createMarriage = async (groom_given_name, groom_surname, groom_id_num, groom_place_birth, groom_born_on, bride_given_name, bride_surname, bride_id_num, bride_place_birth, bride_born_on, groom_father_name, groom_mother_name, bride_father_name, bride_mother_name, groom_nationality, groom_profession, groom_resident_at, groom_family_head, groom_witness_name, bride_nationality, bride_profession, bride_resident_at, bride_family_head, bride_witness_name, matrimonial_regime, objections, marriage_type) => {
     try {
-    
-       const res = await axios({
-            method: 'POST',
-            url: 'http://localhost:3000/api/certificates/marriage',
-            data: {
-                groom_given_name, groom_surname, groom_id_num, groom_place_birth, groom_born_on, bride_given_name, bride_surname, bride_id_num, bride_place_birth, bride_born_on, groom_father_name, groom_mother_name, bride_father_name, bride_mother_name, groom_nationality, groom_profession, groom_resident_at, groom_family_head, groom_witness_name, bride_nationality, bride_profession, bride_resident_at, bride_family_head, bride_witness_name, matrimonial_regime, objections, marriage_type
-            }
-        })
+      const response = await fetch('/api/certificates/marriage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-        
-        console.log(res);
+      const result = await response.json();
 
-        if (res.data.status === 'success') {
-            
-            (async( ) => {
-                try{
-                    const createPdf =  await axios({
-                            method: 'GET',
-                            url: 'http://localhost:3000/create-marriage-pdf'
-                        })  
-                    
-                        
-                    if (createPdf.data.status === 'success') {
-
-                        alert('Marriage Registered Successful, redirecting to print page')
-                                    
-                        window.setTimeout(()=>{
-                            location.assign('/generate-marriage-certificate')
-                        }, 1000);
-
-                    }
-                    
-                } catch(err) {
-                    console.log(err)
-                } 
-
-               
-            })();
-        }
-    } catch (err) {
-       console.log(err.response.data);
+      if (result.status === 'success') {
+        showNotification('Marriage certificate registered successfully!', 'success');
+        marriageForm.reset();
+        // Redirect to view certificate
+        setTimeout(() => {
+          window.location.href = '/generate-marriage-certificate';
+        }, 1500);
+      } else {
+        showNotification(result.message || 'Failed to register marriage certificate', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showNotification('An error occurred. Please try again.', 'error');
+    } finally {
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
     }
+  });
 }
 
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${
+    type === 'success' ? 'bg-green-600' : 'bg-red-600'
+  } text-white`;
+  notification.innerHTML = `
+    <div class="flex items-center gap-3">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        ${
+          type === 'success'
+            ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>'
+            : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+        }
+      </svg>
+      <span>${message}</span>
+    </div>
+  `;
+  document.body.appendChild(notification);
 
+  // Animate in
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 100);
 
-if (form) {
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-
-        const groom_given_name = document.getElementById('groom_given_name').value;
-        const groom_surname = document.getElementById('groom_surname').value;
-        const groom_id_num = document.getElementById('groom_reference_doc').value;
-        const groom_place_birth = document.getElementById('groom_place_birth').value;
-        const groom_born_on = document.getElementById('groom_born_on').value;
-        const groom_nationality = document.getElementById('groom_nationality').value;
-        const groom_profession = document.getElementById('groom_profession').value;
-        const groom_resident_at = document.getElementById('groom_resident_at').value;
-        const groom_family_head = document.getElementById('groom_family_head').value;
-        const groom_witness_name = document.getElementById('groom_witness_name').value;
-
-        const bride_given_name = document.getElementById('bride_given_name').value;
-        const bride_surname = document.getElementById('bride_surname').value;
-        const bride_id_num = document.getElementById('bride_reference_doc').value;
-        const bride_place_birth = document.getElementById('bride_place_birth').value;
-        const bride_born_on = document.getElementById('bride_born_on').value;
-        const bride_nationality = document.getElementById('bride_nationality').value;
-        const bride_profession = document.getElementById('bride_profession').value;
-        const bride_resident_at = document.getElementById('bride_resident_at').value;
-        const bride_family_head = document.getElementById('bride_family_head').value;
-        const bride_witness_name = document.getElementById('bride_witness_name').value;
-
-        const groom_father_name = document.getElementById('groom_father_name').value;
-        const groom_mother_name = document.getElementById('groom_mother_name').value;
-
-        const bride_father_name = document.getElementById('bride_father_name').value;
-        const bride_mother_name = document.getElementById('bride_mother_name').value;
-
-        let matrimonial_regime = document.querySelector('input[name="regime"]:checked').value;
-        let objections = document.querySelector('input[name="objections"]:checked').value;
-        let marriage_type = document.querySelector('input[name="type"]:checked').value;
-
-
-   
-      //  console.log(bride_mother_name, groom_surname, groom_father_name)
-
-        createMarriage(groom_given_name, groom_surname, groom_id_num, groom_place_birth, groom_born_on, bride_given_name, bride_surname, bride_id_num, bride_place_birth, bride_born_on, groom_father_name, groom_mother_name, bride_father_name, bride_mother_name, groom_nationality, groom_profession, groom_resident_at, groom_family_head, groom_witness_name, bride_nationality, bride_profession, bride_resident_at, bride_family_head, bride_witness_name, matrimonial_regime, objections, marriage_type);
-
-    });
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }

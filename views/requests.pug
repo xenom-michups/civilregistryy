@@ -1,0 +1,272 @@
+extends layout
+
+block content
+  .max-w-7xl.mx-auto
+    .flex.items-center.justify-between.mb-8
+      div
+        h2.text-2xl.font-bold Certificate Requests
+        p.text-dark-400.mt-1 Manage online certificate requests from citizens
+
+    //- Stats Cards
+    .grid.gap-6.mb-8(class="md:grid-cols-4")
+      .card.p-4
+        .flex.items-center.gap-4
+          div(class="w-12 h-12 bg-yellow-600/20 rounded-xl flex items-center justify-center")
+            svg.w-6.h-6.text-yellow-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+          div
+            p.text-2xl.font-bold#pendingCount 0
+            p.text-dark-400.text-sm Pending
+      .card.p-4
+        .flex.items-center.gap-4
+          div(class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center")
+            svg.w-6.h-6.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15")
+          div
+            p.text-2xl.font-bold#processingCount 0
+            p.text-dark-400.text-sm Processing
+      .card.p-4
+        .flex.items-center.gap-4
+          div(class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center")
+            svg.w-6.h-6.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+          div
+            p.text-2xl.font-bold#readyCount 0
+            p.text-dark-400.text-sm Ready
+      .card.p-4
+        .flex.items-center.gap-4
+          div(class="w-12 h-12 bg-primary-600/20 rounded-xl flex items-center justify-center")
+            svg.w-6.h-6.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+          div
+            p.text-2xl.font-bold#collectedCount 0
+            p.text-dark-400.text-sm Collected
+
+    //- Filters
+    .card.p-4.mb-6
+      .flex.flex-wrap.gap-4
+        select#statusFilter.input.w-auto
+          option(value="" selected=(selectedStatus === '')) All Status
+          option(value="pending" selected=(selectedStatus === 'pending')) Pending
+          option(value="processing" selected=(selectedStatus === 'processing')) Processing
+          option(value="approved" selected=(selectedStatus === 'approved')) Approved
+          option(value="ready" selected=(selectedStatus === 'ready')) Ready
+          option(value="rejected" selected=(selectedStatus === 'rejected')) Rejected
+          option(value="collected" selected=(selectedStatus === 'collected')) Collected
+        select#typeFilter.input.w-auto
+          option(value="" selected=(selectedType === '')) All Types
+          option(value="birth" selected=(selectedType === 'birth')) Birth
+          option(value="death" selected=(selectedType === 'death')) Death
+          option(value="marriage" selected=(selectedType === 'marriage')) Marriage
+          option(value="residency" selected=(selectedType === 'residency')) Residency
+
+    //- Requests Table
+    .card.overflow-hidden
+      .overflow-x-auto
+        table.w-full
+          thead.bg-dark-800
+            tr
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Request #
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Type
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Requester
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Subject
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Date
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Status
+              th.px-6.py-4.text-left.text-xs.font-semibold.text-dark-400.uppercase Actions
+          tbody#requestsTable
+            if requests && requests.length > 0
+              each req in requests
+                tr.border-t.border-dark-800(class="hover:bg-dark-800/50")
+                  td.px-6.py-4
+                    span.font-mono.text-primary-500= req.requestNumber
+                  td.px-6.py-4
+                    span.capitalize= req.certificateType
+                  td.px-6.py-4
+                    div
+                      p.font-medium= req.requesterName
+                      p.text-dark-400.text-sm= req.requesterEmail
+                  td.px-6.py-4= req.subjectName
+                  td.px-6.py-4.text-dark-400= new Date(req.createdAt).toLocaleDateString()
+                  td.px-6.py-4
+                    - const statusClass = req.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : req.status === 'processing' ? 'bg-blue-500/20 text-blue-400' : req.status === 'approved' || req.status === 'ready' ? 'bg-green-500/20 text-green-400' : req.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400'
+                    span.px-3.py-1.text-xs.rounded-full(class=statusClass)= req.status
+                  td.px-6.py-4
+                    .flex.gap-2
+                      button.btn.btn-secondary.text-xs.px-3.py-1.view-btn(data-id=req.id) View
+                      if req.status === 'pending'
+                        button.btn.btn-primary.text-xs.px-3.py-1.process-btn(data-id=req.id) Process
+            else
+              tr
+                td.px-6.py-8.text-center.text-dark-400(colspan="7") No requests found
+
+    //- Request Detail Modal
+    #requestModal.fixed.inset-0.z-50.hidden
+      .absolute.inset-0.bg-black.bg-opacity-50(onclick="closeModal()")
+      .absolute.inset-4.md_inset-20.bg-dark-900.rounded-2xl.overflow-auto.p-8(class="md:inset-20")
+        .flex.items-center.justify-between.mb-6
+          h3.text-xl.font-bold Request Details
+          button.text-dark-400(onclick="closeModal()" class="hover:text-white")
+            svg.w-6.h-6(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12")
+        #modalContent
+
+block scripts
+  script.
+    // Make functions globally accessible for onclick handlers
+    window.closeModal = function() {
+      document.getElementById('requestModal').classList.add('hidden');
+    }
+
+    window.updateStatus = async function(id, status) {
+      try {
+        const res = await fetch(`/api/requests/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status }),
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          location.reload();
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (err) {
+        alert('Error updating status');
+      }
+    }
+
+    window.showRejectForm = function(id) {
+      document.getElementById('rejectForm').classList.remove('hidden');
+    }
+
+    window.rejectRequest = async function(id) {
+      const reason = document.getElementById('rejectReason').value;
+      if (!reason) {
+        alert('Please provide a rejection reason');
+        return;
+      }
+      try {
+        const res = await fetch(`/api/requests/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'rejected', rejectionReason: reason }),
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          location.reload();
+        }
+      } catch (err) {
+        alert('Error rejecting request');
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/requests/stats');
+        const data = await res.json();
+        if (data.status === 'success') {
+          document.getElementById('pendingCount').textContent = data.data.pending;
+          document.getElementById('processingCount').textContent = data.data.processing;
+          document.getElementById('readyCount').textContent = data.data.ready;
+          document.getElementById('collectedCount').textContent = data.data.collected;
+        }
+      } catch (err) {
+        console.log('Error loading stats');
+      }
+    }
+    loadStats();
+
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        try {
+          const res = await fetch(`/api/requests/${id}`);
+          const data = await res.json();
+          if (data.status === 'success') {
+            const r = data.data.request;
+            document.getElementById('modalContent').innerHTML = `
+              <div class="grid gap-6 md:grid-cols-2">
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-primary-500">Request Information</h4>
+                  <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><span class="text-dark-500">Request #:</span><br><span class="font-mono">${r.requestNumber}</span></div>
+                    <div><span class="text-dark-500">Type:</span><br><span class="capitalize">${r.certificateType}</span></div>
+                    <div><span class="text-dark-500">Status:</span><br><span class="capitalize">${r.status}</span></div>
+                    <div><span class="text-dark-500">Purpose:</span><br>${r.purpose}</div>
+                  </div>
+                </div>
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-primary-500">Requester Information</h4>
+                  <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><span class="text-dark-500">Name:</span><br>${r.requesterName}</div>
+                    <div><span class="text-dark-500">Email:</span><br>${r.requesterEmail}</div>
+                    <div><span class="text-dark-500">Phone:</span><br>${r.requesterPhone}</div>
+                    <div><span class="text-dark-500">ID:</span><br>${r.requesterIdNum}</div>
+                    <div class="col-span-2"><span class="text-dark-500">Address:</span><br>${r.requesterAddress}</div>
+                  </div>
+                </div>
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-primary-500">Subject Information</h4>
+                  <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><span class="text-dark-500">Name:</span><br>${r.subjectName}</div>
+                    <div><span class="text-dark-500">DOB:</span><br>${r.subjectBornOn || 'N/A'}</div>
+                    <div><span class="text-dark-500">Relationship:</span><br>${r.relationship}</div>
+                  </div>
+                </div>
+                ${r.requesterSignature ? `
+                <div class="space-y-4">
+                  <h4 class="font-semibold text-primary-500">Signature</h4>
+                  <img src="${r.requesterSignature}" class="border border-dark-700 rounded-lg max-h-32" />
+                </div>
+                ` : ''}
+              </div>
+              <div class="mt-8 pt-6 border-t border-dark-700">
+                <h4 class="font-semibold mb-4">Update Status</h4>
+                <div class="flex gap-4 flex-wrap">
+                  <button onclick="updateStatus(${r.id}, 'processing')" class="btn btn-secondary">Mark Processing</button>
+                  <button onclick="updateStatus(${r.id}, 'approved')" class="btn btn-secondary">Approve</button>
+                  <button onclick="updateStatus(${r.id}, 'ready')" class="btn btn-primary">Mark Ready</button>
+                  <button onclick="updateStatus(${r.id}, 'collected')" class="btn btn-secondary">Mark Collected</button>
+                  <button onclick="showRejectForm(${r.id})" class="btn bg-red-600 hover:bg-red-700">Reject</button>
+                </div>
+                <div id="rejectForm" class="hidden mt-4">
+                  <textarea id="rejectReason" class="input w-full" rows="2" placeholder="Reason for rejection..."></textarea>
+                  <button onclick="rejectRequest(${r.id})" class="btn bg-red-600 hover:bg-red-700 mt-2">Confirm Rejection</button>
+                </div>
+              </div>
+            `;
+            document.getElementById('requestModal').classList.remove('hidden');
+          }
+        } catch (err) {
+          alert('Error loading request details');
+        }
+      });
+    });
+
+    document.querySelectorAll('.process-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        await updateStatus(id, 'processing');
+      });
+    });
+
+    // Filters
+    document.getElementById('statusFilter').addEventListener('change', filterRequests);
+    document.getElementById('typeFilter').addEventListener('change', filterRequests);
+
+    async function filterRequests() {
+      const status = document.getElementById('statusFilter').value;
+      const type = document.getElementById('typeFilter').value;
+      const params = new URLSearchParams();
+      if (status) params.append('status', status);
+      if (type) params.append('type', type);
+      
+      try {
+        const res = await fetch(`/api/requests?${params}`);
+        const data = await res.json();
+        // Reload page with filters for simplicity
+        window.location.href = `/requests?${params}`;
+      } catch (err) {
+        console.log('Error filtering');
+      }
+    }

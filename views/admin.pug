@@ -1,0 +1,188 @@
+extends layout
+
+block content
+  //- Stats Cards
+  div(class="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-6")
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+      .mt-4
+        p.text-2xl.font-bold= totalBirths || 0
+        p.text-sm.text-dark-400 Births
+
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-gray-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-gray-400(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+      .mt-4
+        p.text-2xl.font-bold= totalDeaths || 0
+        p.text-sm.text-dark-400 Deaths
+
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-pink-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+      .mt-4
+        p.text-2xl.font-bold= totalMarriages || 0
+        p.text-sm.text-dark-400 Marriages
+
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+      .mt-4
+        p.text-2xl.font-bold= totalResidencies || 0
+        p.text-sm.text-dark-400 Residency
+
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-amber-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-amber-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01")
+      .mt-4
+        p.text-2xl.font-bold= totalRequests || 0
+        p.text-sm.text-dark-400 Requests
+
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-purple-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+      .mt-4
+        p.text-2xl.font-bold= totalUsers || 0
+        p.text-sm.text-dark-400 Users
+
+  //- Main Content Card with Tabs
+  .card
+    //- Tab Headers
+    .flex.flex-wrap.border-b.border-dark-700
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.bg-dark-800.text-primary-500.border-b-2.border-primary-500(type="button" data-tab="births")
+        span Births
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="deaths" class="hover:text-white hover:bg-dark-800")
+        span Deaths
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="marriages" class="hover:text-white hover:bg-dark-800")
+        span Marriages
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="residencies" class="hover:text-white hover:bg-dark-800")
+        span Residency
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="requests" class="hover:text-white hover:bg-dark-800")
+        span Requests
+      button.admin-tab.flex-1.py-4.px-4.text-sm.font-medium.transition-colors.text-dark-400(type="button" data-tab="users" class="hover:text-white hover:bg-dark-800")
+        span Users
+
+
+    //- Search and Controls
+    .p-6.border-b.border-dark-700
+      .flex.flex-wrap.items-center.justify-between.gap-4
+        .flex.items-center.gap-4
+          .relative
+            input#searchInput.input.w-64.pl-10(type="search" placeholder="Search...")
+            svg(class="w-5 h-5 text-dark-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+          select#sortSelect.input.w-40
+            option(value="newest") Newest First
+            option(value="oldest") Oldest First
+            option(value="name") By Name
+          select#perPageSelect.input.w-32
+            option(value="10") 10 per page
+            option(value="25") 25 per page
+            option(value="50") 50 per page
+            option(value="100") 100 per page
+        .flex.items-center.gap-2
+          button#printBtn.btn.btn-secondary
+            svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z")
+            span Print
+          button#addStaffBtn.btn.btn-primary.hidden
+            svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6")
+            span Add Staff
+
+    //- Tab Contents
+    #birthsTab.admin-tab-content.p-6
+      #birthsTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    #deathsTab.admin-tab-content.hidden.p-6
+      #deathsTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    #marriagesTab.admin-tab-content.hidden.p-6
+      #marriagesTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    #residenciesTab.admin-tab-content.hidden.p-6
+      #residenciesTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    #requestsTab.admin-tab-content.hidden.p-6
+      #requestsTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    #usersTab.admin-tab-content.hidden.p-6
+      #usersTable
+        .text-center.py-8.text-dark-400 Loading...
+
+    //- Pagination
+    .p-6.border-t.border-dark-700
+      .flex.items-center.justify-between
+        p#paginationInfo.text-sm.text-dark-400 Showing 0 of 0 entries
+        .flex.items-center.gap-2
+          button#prevBtn.btn.btn-secondary.px-3.py-2(disabled)
+            svg.w-5.h-5(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7")
+          span#pageNumbers.flex.gap-1
+          button#nextBtn.btn.btn-secondary.px-3.py-2(disabled)
+            svg.w-5.h-5(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7")
+
+
+  //- Add Staff Modal
+  #addStaffModal.fixed.inset-0.z-50.hidden.flex.items-center.justify-center
+    #addStaffModalBackdrop.absolute.inset-0.bg-black.bg-opacity-50
+    .relative.z-10.bg-dark-900.rounded-xl.p-6.w-full.max-w-md.border.border-dark-700.m-4
+      .flex.items-center.justify-between.mb-6
+        h3.text-xl.font-semibold Add Staff Member
+        button#closeStaffModalBtn.text-dark-400(type="button" class="hover:text-white")
+          svg.w-6.h-6(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12")
+      form#addStaffForm.space-y-4
+        div
+          label.label Full Name
+          input#staffName.input(type="text" required)
+        div
+          label.label Email
+          input#staffEmail.input(type="email" required)
+        div
+          label.label Role
+          select#staffRole.input
+            option(value="registrar") Registrar
+            option(value="admin") Admin
+        div
+          label.label Password
+          input#staffPassword.input(type="password" required minlength="8")
+        button.btn.btn-primary.w-full(type="submit") Create Staff Account
+
+  //- View Modal
+  #viewModal.fixed.inset-0.z-50.hidden.flex.items-center.justify-center
+    #viewModalBackdrop.absolute.inset-0.bg-black.bg-opacity-50
+    .relative.z-10.bg-dark-900.rounded-xl.p-6.w-full.max-w-2xl.border.border-dark-700.max-h-screen.overflow-y-auto.m-4
+      .flex.items-center.justify-between.mb-6
+        h3#viewModalTitle.text-xl.font-semibold Certificate Details
+        .flex.items-center.gap-2
+          button#printCertBtn.btn.btn-secondary(type="button")
+            svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z")
+            span Print
+          button#closeViewModalBtn.text-dark-400(type="button" class="hover:text-white")
+            svg.w-6.h-6(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12")
+      #viewModalContent
+        .text-center.py-8.text-dark-400 Loading...
+
+block scripts
+  script(src="/js/admin.js")

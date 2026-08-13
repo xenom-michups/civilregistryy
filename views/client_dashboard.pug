@@ -1,0 +1,163 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Client Dashboard | Civil Registry System
+    link(rel="stylesheet" href="/styles/tailwind.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet")
+    link(rel="icon" href="/images/Favicon.png" type="image/png")
+
+  body.bg-dark-950.text-white.min-h-screen
+    //- Navigation
+    nav.fixed.top-0.left-0.right-0.z-50.glass.border-b.border-dark-800
+      .max-w-7xl.mx-auto.px-6.py-4
+        .flex.items-center.justify-between
+          a.flex.items-center.gap-3(href="/")
+            .w-10.h-10.bg-primary-600.rounded-xl.flex.items-center.justify-center
+              svg.w-6.h-6.text-white(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            span.text-xl.font-bold Civil Registry System
+
+          .flex.items-center.gap-4
+            if user
+              .flex.items-center.gap-3
+                img.w-10.h-10.rounded-full.object-cover.ring-2.ring-primary-500(src=`/images/${user.photo || 'profile.jpeg'}` alt="Profile")
+                .hidden(class="md:block")
+                  p.text-sm.font-medium= user.name
+                  p.text-xs.text-dark-400= user.email
+              button#logOutBtn.btn.btn-outline.ml-4 Logout
+
+    //- Main Content
+    main.pt-24.pb-12.px-6
+      .max-w-7xl.mx-auto
+        //- Welcome Section
+        .mb-8
+          h1.text-3xl.font-bold.mb-2 Welcome, #{user ? user.name : 'Guest'}!
+          p.text-dark-400 Manage your certificate requests and track their status
+
+        //- Quick Actions
+        div(class="grid gap-6 mb-8 md:grid-cols-4")
+          a.card.p-6.text-center.transition-all.duration-300(href="/request-certificate" class="hover:border-primary-500/50 hover:shadow-primary-500/10 hover:shadow-xl")
+            div(class="w-14 h-14 bg-primary-600/20 rounded-xl flex items-center justify-center mx-auto mb-4")
+              svg.w-7.h-7.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6")
+            h3.font-semibold.mb-1 New Request
+            p.text-dark-400.text-sm Request a certificate
+
+          a.card.p-6.text-center.transition-all.duration-300(href="/track-request" class="hover:border-blue-500/50 hover:shadow-blue-500/10 hover:shadow-xl")
+            div(class="w-14 h-14 bg-blue-600/20 rounded-xl flex items-center justify-center mx-auto mb-4")
+              svg.w-7.h-7.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z")
+            h3.font-semibold.mb-1 Track Request
+            p.text-dark-400.text-sm Check request status
+
+          a.card.p-6.text-center.transition-all.duration-300(href="/client" class="hover:border-pink-500/50 hover:shadow-pink-500/10 hover:shadow-xl")
+            div(class="w-14 h-14 bg-pink-600/20 rounded-xl flex items-center justify-center mx-auto mb-4")
+              svg.w-7.h-7.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+            h3.font-semibold.mb-1 Lookup Certificate
+            p.text-dark-400.text-sm Search records
+
+          .card.p-6.text-center
+            div(class="w-14 h-14 bg-amber-600/20 rounded-xl flex items-center justify-center mx-auto mb-4")
+              svg.w-7.h-7.text-amber-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01")
+            h3.font-semibold.mb-1 My Requests
+            p.text-dark-400.text-sm= (requests ? requests.length : 0) + ' total'
+
+        //- Stats Cards
+        div(class="grid gap-6 mb-8 md:grid-cols-4")
+          .stat-card
+            .flex.items-center.justify-between
+              div(class="w-12 h-12 bg-yellow-600/20 rounded-xl flex items-center justify-center")
+                svg.w-6.h-6.text-yellow-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+            .mt-4
+              p.text-3xl.font-bold= pendingCount || 0
+              p.text-sm.text-dark-400 Pending
+
+          .stat-card
+            .flex.items-center.justify-between
+              div(class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center")
+                svg.w-6.h-6.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z")
+            .mt-4
+              p.text-3xl.font-bold= processingCount || 0
+              p.text-sm.text-dark-400 Processing
+
+          .stat-card
+            .flex.items-center.justify-between
+              div(class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center")
+                svg.w-6.h-6.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7")
+            .mt-4
+              p.text-3xl.font-bold= completedCount || 0
+              p.text-sm.text-dark-400 Completed
+
+          .stat-card
+            .flex.items-center.justify-between
+              div(class="w-12 h-12 bg-red-600/20 rounded-xl flex items-center justify-center")
+                svg.w-6.h-6.text-red-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                  path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12")
+            .mt-4
+              p.text-3xl.font-bold= rejectedCount || 0
+              p.text-sm.text-dark-400 Rejected
+
+        //- My Requests Table
+        .card
+          .flex.items-center.justify-between.p-6.border-b.border-dark-700
+            h3.text-lg.font-semibold My Certificate Requests
+            a.btn.btn-primary(href="/request-certificate")
+              svg.w-5.h-5.mr-2(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6")
+              span New Request
+
+          .overflow-x-auto
+            table.w-full
+              thead(class="bg-dark-800/50")
+                tr
+                  th.table-header Request #
+                  th.table-header Type
+                  th.table-header Name on Certificate
+                  th.table-header Date
+                  th.table-header Status
+                  th.table-header Actions
+              tbody.divide-y.divide-dark-700
+                if requests && requests.length
+                  each req in requests
+                    tr(class="transition-colors hover:bg-dark-800/50")
+                      td.table-cell.font-mono.text-xs= req.requestNumber || req.request_number
+                      td.table-cell
+                        - const typeColors = { birth: 'blue', death: 'gray', marriage: 'pink', residency: 'green' }
+                        - const typeColor = typeColors[req.certificateType || req.certificate_type] || 'primary'
+                        span(class=`px-2 py-1 text-xs rounded-full bg-${typeColor}-500/20 text-${typeColor}-400 capitalize`)= req.certificateType || req.certificate_type
+                      td.table-cell= req.subjectName || req.subject_name
+                      td.table-cell.text-dark-400= req.createdAt ? new Date(req.createdAt).toLocaleDateString() : '-'
+                      td.table-cell
+                        - const statusColors = { pending: 'yellow', processing: 'blue', approved: 'green', completed: 'green', rejected: 'red' }
+                        - const statusColor = statusColors[req.status] || 'gray'
+                        span(class=`px-3 py-1 text-xs rounded-full bg-${statusColor}-500/20 text-${statusColor}-400 capitalize`)= req.status
+                      td.table-cell
+                        .flex.items-center.gap-2
+                          a.p-2.rounded-lg.text-dark-400.transition-colors(href=`/track-request?number=${req.requestNumber || req.request_number}` class="hover:bg-dark-700 hover:text-white" title="Track")
+                            svg.w-5.h-5(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z")
+                              path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z")
+                else
+                  tr
+                    td.table-cell.text-center.text-dark-500.py-12(colspan="6")
+                      div(class="w-16 h-16 bg-dark-800 rounded-full flex items-center justify-center mx-auto mb-4")
+                        svg.w-8.h-8.text-dark-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+                      p.mb-2 No requests yet
+                      a.text-primary-500(href="/request-certificate" class="hover:text-primary-400") Make your first request →
+
+    //- Footer
+    footer.bg-dark-900.border-t.border-dark-800.py-8
+      .max-w-7xl.mx-auto.px-6.text-center
+        p.text-dark-500.text-sm © #{new Date().getFullYear()} Civil Registry System. All rights reserved.
+
+    script(src="/js/login.js")

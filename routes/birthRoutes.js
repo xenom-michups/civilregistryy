@@ -1,21 +1,22 @@
 const express = require('express');
-const router = express.Router();
 const birthController = require('../controllers/birthController');
 const authController = require('../controllers/authController');
 
+const router = express.Router();
+
+router.use(authController.protect);
+
+router.get('/birth/stats', birthController.getStats);
+
 router
   .route('/birth')
-  .get(authController.protect, birthController.getAllBirthCert)
-  .post(authController.protect, birthController.createBirthCert);
+  .get(birthController.getAllBirthCert)
+  .post(birthController.createBirthCert);
 
 router
   .route('/birth/:id')
-  .get(authController.protect, birthController.getBirthCert)
-  .patch(authController.protect, birthController.updateBirthCert)
-  .delete(
-    authController.protect,
-    authController.restrictTo('admin'),
-    birthController.deleteBirthCert
-  );
+  .get(birthController.getBirthCert)
+  .patch(birthController.updateBirthCert)
+  .delete(authController.restrictTo('admin'), birthController.deleteBirthCert);
 
 module.exports = router;

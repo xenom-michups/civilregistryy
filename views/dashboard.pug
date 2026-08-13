@@ -1,3 +1,293 @@
 extends layout
+
 block content
-    include _analytics
+  //- Stats Cards
+  div(class="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4")
+    //- Birth Certificates
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-blue-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z")
+        span(class="text-xs text-blue-500 bg-blue-500/20 px-2 py-1 rounded-full")= birthPercentage + '%'
+      .mt-4
+        p.text-3xl.font-bold= totalBirths || 0
+        p.text-sm.text-dark-400 Birth Certificates
+
+    //- Death Certificates
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-gray-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-gray-400(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+        span(class="text-xs text-gray-400 bg-gray-500/20 px-2 py-1 rounded-full")= deathPercentage + '%'
+      .mt-4
+        p.text-3xl.font-bold= totalDeaths || 0
+        p.text-sm.text-dark-400 Death Certificates
+
+    //- Marriage Certificates
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-pink-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+        span(class="text-xs text-pink-500 bg-pink-500/20 px-2 py-1 rounded-full")= marriagePercentage + '%'
+      .mt-4
+        p.text-3xl.font-bold= totalMarriages || 0
+        p.text-sm.text-dark-400 Marriage Certificates
+
+    //- Residency Certificates
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-green-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6")
+        span(class="text-xs text-green-500 bg-green-500/20 px-2 py-1 rounded-full")= residencyPercentage + '%'
+      .mt-4
+        p.text-3xl.font-bold= totalResidencies || 0
+        p.text-sm.text-dark-400 Residency Certificates
+
+  //- Second Row Stats
+  div(class="grid gap-6 mb-8 md:grid-cols-3")
+    //- Total Certificates
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-primary-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-primary-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z")
+      .mt-4
+        p.text-3xl.font-bold= (totalBirths || 0) + (totalDeaths || 0) + (totalMarriages || 0) + (totalResidencies || 0)
+        p.text-sm.text-dark-400 Total Certificates
+
+    //- Online Requests
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-amber-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-amber-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01")
+      .mt-4
+        p.text-3xl.font-bold= totalRequests || 0
+        p.text-sm.text-dark-400 Online Requests
+
+    //- Pending Requests
+    .stat-card
+      .flex.items-center.justify-between
+        div(class="w-12 h-12 bg-yellow-600/20 rounded-xl flex items-center justify-center")
+          svg.w-6.h-6.text-yellow-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+            path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z")
+      .mt-4
+        p.text-3xl.font-bold= pendingRequests || 0
+        p.text-sm.text-dark-400 Pending Requests
+
+  //- Charts Row
+  div(class="grid gap-6 mb-8 lg:grid-cols-2")
+    //- Line Chart
+    .card.p-6
+      .flex.items-center.justify-between.mb-6
+        h3.text-lg.font-semibold Registration Trends
+        select.input.w-auto.py-2
+          option This Year
+          option Last Year
+      #lineChart.h-72
+
+    //- Pie Chart
+    .card.p-6
+      .flex.items-center.justify-between.mb-6
+        h3.text-lg.font-semibold Certificate Distribution
+      #pieChart.h-72
+
+  //- Recent Records
+  div(class="grid gap-6 lg:grid-cols-2")
+    //- Recent Births
+    .card
+      .flex.items-center.justify-between.p-6.border-b.border-dark-700
+        h3.text-lg.font-semibold Recent Birth Certificates
+        a.text-sm.text-primary-500(href="/birth" class="hover:text-primary-400") View All →
+
+      .overflow-x-auto
+        table.w-full
+          thead(class="bg-dark-800/50")
+            tr
+              th.table-header Name
+              th.table-header Date of Birth
+              th.table-header Sex
+              th.table-header Certificate #
+          tbody.divide-y.divide-dark-700
+            if birth && birth.length
+              each b in birth.slice(0, 5)
+                tr(class="transition-colors hover:bg-dark-800/50")
+                  td.table-cell
+                    .flex.items-center.gap-3
+                      div(class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center")
+                        span.text-xs.font-medium.text-blue-500= b.givenname ? b.givenname.charAt(0) : 'N'
+                      span.font-medium= b.givenname + ' ' + b.surname
+                  td.table-cell.text-dark-400= b.bornOn ? new Date(b.bornOn).toLocaleDateString() : '-'
+                  td.table-cell
+                    span(class=`px-2 py-1 text-xs rounded-full ${b.sex === 'male' ? 'bg-blue-500/20 text-blue-400' : 'bg-pink-500/20 text-pink-400'}`)= b.sex
+                  td.table-cell.text-dark-400.font-mono.text-xs= b.certificateNumber || '-'
+            else
+              tr
+                td.table-cell.text-center.text-dark-500(colspan="4") No birth certificates found
+
+    //- Recent Marriages
+    .card
+      .flex.items-center.justify-between.p-6.border-b.border-dark-700
+        h3.text-lg.font-semibold Recent Marriage Certificates
+        a.text-sm.text-primary-500(href="/marriage" class="hover:text-primary-400") View All →
+
+      .overflow-x-auto
+        table.w-full
+          thead(class="bg-dark-800/50")
+            tr
+              th.table-header Couple
+              th.table-header Date
+              th.table-header Type
+              th.table-header Certificate #
+          tbody.divide-y.divide-dark-700
+            if marriage && marriage.length
+              each m in marriage.slice(0, 5)
+                tr(class="transition-colors hover:bg-dark-800/50")
+                  td.table-cell
+                    .flex.items-center.gap-3
+                      div(class="w-8 h-8 bg-pink-600/20 rounded-full flex items-center justify-center")
+                        svg.w-4.h-4.text-pink-500(fill="none" stroke="currentColor" viewBox="0 0 24 24")
+                          path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z")
+                      .flex.flex-col
+                        span.font-medium= (m.groomGivenName || m.groom_given_name) + ' & ' + (m.brideGivenName || m.bride_given_name)
+                  td.table-cell.text-dark-400= m.drawnUpOn ? new Date(m.drawnUpOn).toLocaleDateString() : (m.drawn_up_on ? new Date(m.drawn_up_on).toLocaleDateString() : '-')
+                  td.table-cell
+                    span(class="px-2 py-1 text-xs rounded-full bg-primary-500/20 text-primary-400")= m.marriageType || m.marriage_type
+                  td.table-cell.text-dark-400.font-mono.text-xs= m.certificateNumber || m.certificate_number || '-'
+            else
+              tr
+                td.table-cell.text-center.text-dark-500(colspan="4") No marriage certificates found
+
+  //- Second Row of Recent Records
+  div(class="grid gap-6 lg:grid-cols-2 mt-6")
+    //- Recent Deaths
+    .card
+      .flex.items-center.justify-between.p-6.border-b.border-dark-700
+        h3.text-lg.font-semibold Recent Death Certificates
+        a.text-sm.text-primary-500(href="/death" class="hover:text-primary-400") View All →
+
+      .overflow-x-auto
+        table.w-full
+          thead(class="bg-dark-800/50")
+            tr
+              th.table-header Name
+              th.table-header Date of Death
+              th.table-header Age
+              th.table-header Certificate #
+          tbody.divide-y.divide-dark-700
+            if death && death.length
+              each d in death.slice(0, 5)
+                tr(class="transition-colors hover:bg-dark-800/50")
+                  td.table-cell
+                    .flex.items-center.gap-3
+                      div(class="w-8 h-8 bg-gray-600/20 rounded-full flex items-center justify-center")
+                        span.text-xs.font-medium.text-gray-400= d.givenName ? d.givenName.charAt(0) : 'N'
+                      span.font-medium= (d.givenName || d.given_name) + ' ' + (d.surname || '')
+                  td.table-cell.text-dark-400= d.dateOfDeath ? new Date(d.dateOfDeath).toLocaleDateString() : (d.date_of_death ? new Date(d.date_of_death).toLocaleDateString() : '-')
+                  td.table-cell.text-dark-400= d.age || '-'
+                  td.table-cell.text-dark-400.font-mono.text-xs= d.certificateNumber || d.certificate_number || '-'
+            else
+              tr
+                td.table-cell.text-center.text-dark-500(colspan="4") No death certificates found
+
+    //- Recent Online Requests
+    .card
+      .flex.items-center.justify-between.p-6.border-b.border-dark-700
+        h3.text-lg.font-semibold Recent Online Requests
+        a.text-sm.text-primary-500(href="/requests" class="hover:text-primary-400") View All →
+
+      .overflow-x-auto
+        table.w-full
+          thead(class="bg-dark-800/50")
+            tr
+              th.table-header Request #
+              th.table-header Type
+              th.table-header Requester
+              th.table-header Status
+          tbody.divide-y.divide-dark-700
+            if requests && requests.length
+              each r in requests.slice(0, 5)
+                tr(class="transition-colors hover:bg-dark-800/50")
+                  td.table-cell.font-mono.text-xs= r.requestNumber || r.request_number
+                  td.table-cell
+                    - const typeColors = { birth: 'blue', death: 'gray', marriage: 'pink', residency: 'green' }
+                    - const typeColor = typeColors[r.certificateType || r.certificate_type] || 'primary'
+                    span(class=`px-2 py-1 text-xs rounded-full bg-${typeColor}-500/20 text-${typeColor}-400 capitalize`)= r.certificateType || r.certificate_type
+                  td.table-cell= r.fullName || r.full_name
+                  td.table-cell
+                    - const statusColors = { pending: 'yellow', processing: 'blue', approved: 'green', completed: 'green', rejected: 'red' }
+                    - const statusColor = statusColors[r.status] || 'gray'
+                    span(class=`px-2 py-1 text-xs rounded-full bg-${statusColor}-500/20 text-${statusColor}-400 capitalize`)= r.status
+            else
+              tr
+                td.table-cell.text-center.text-dark-500(colspan="4") No online requests found
+
+block scripts
+  script.
+    // Chart configurations
+    const chartOptions = {
+      chart: {
+        background: 'transparent',
+        toolbar: { show: false },
+        fontFamily: 'Inter, sans-serif',
+      },
+      theme: { mode: 'dark' },
+      colors: ['#3b82f6', '#6b7280', '#ec4899', '#22c55e'],
+      grid: {
+        borderColor: '#334155',
+        strokeDashArray: 4,
+      },
+    };
+
+    // Line Chart
+    const lineChart = new ApexCharts(document.querySelector('#lineChart'), {
+      ...chartOptions,
+      chart: { ...chartOptions.chart, type: 'area', height: 288 },
+      series: [
+        { name: 'Births', data: [30, 40, 35, 50, 49, 60, 70, 91, 125, 80, 95, 110] },
+        { name: 'Deaths', data: [10, 15, 12, 18, 14, 20, 25, 30, 35, 28, 32, 38] },
+        { name: 'Marriages', data: [20, 30, 25, 40, 35, 45, 55, 65, 75, 60, 70, 85] },
+        { name: 'Residency', data: [15, 20, 18, 25, 22, 30, 35, 40, 45, 38, 42, 50] },
+      ],
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: { style: { colors: '#94a3b8' } },
+      },
+      yaxis: { labels: { style: { colors: '#94a3b8' } } },
+      stroke: { curve: 'smooth', width: 2 },
+      fill: {
+        type: 'gradient',
+        gradient: { opacityFrom: 0.4, opacityTo: 0.1 },
+      },
+      legend: { position: 'top', horizontalAlign: 'right' },
+    });
+    lineChart.render();
+
+    // Pie Chart
+    const pieChart = new ApexCharts(document.querySelector('#pieChart'), {
+      ...chartOptions,
+      chart: { ...chartOptions.chart, type: 'donut', height: 288 },
+      series: [#{totalBirths || 0}, #{totalDeaths || 0}, #{totalMarriages || 0}, #{totalResidencies || 0}],
+      labels: ['Birth', 'Death', 'Marriage', 'Residency'],
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '70%',
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'Total',
+                color: '#94a3b8',
+              },
+            },
+          },
+        },
+      },
+      legend: { position: 'bottom' },
+    });
+    pieChart.render();
