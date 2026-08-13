@@ -5,8 +5,9 @@ const { User } = require('../models');
 const sendEmail = require('../utils/email');
 
 const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+  const secret = process.env.JWT_SECRET || 'default-super-secret-jwt-key-for-demo-only-change-in-production';
+  return jwt.sign({ id }, secret, {
+    expiresIn: process.env.JWT_EXPIRES_IN || '90d',
   });
 };
 
@@ -137,7 +138,8 @@ exports.protect = async (req, res, next) => {
       });
     }
 
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'default-super-secret-jwt-key-for-demo-only-change-in-production';
+    const decoded = await promisify(jwt.verify)(token, secret);
 
     const currentUser = await User.findByPk(decoded.id);
     if (!currentUser) {
@@ -177,7 +179,8 @@ exports.protect = async (req, res, next) => {
 exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
     try {
-      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+      const secret = process.env.JWT_SECRET || 'default-super-secret-jwt-key-for-demo-only-change-in-production';
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, secret);
       const currentUser = await User.findByPk(decoded.id);
 
       if (!currentUser) return next();
