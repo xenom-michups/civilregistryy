@@ -103,13 +103,16 @@ function buildLocalModel(modelName) {
       }
 
       if (limit) rows = rows.slice(0, Number(limit));
-      return rows;
+      return rows.map(row => decorateRecord(row));
     },
     findOne: async ({ where = {} } = {}) => {
       const rows = await model.findAll({ where });
       return rows[0] || null;
     },
-    findByPk: async (id) => getCollection().find((item) => String(item.id) === String(id)) || null,
+    findByPk: async (id) => {
+      const item = getCollection().find((item) => String(item.id) === String(id));
+      return item ? decorateRecord(item) : null;
+    },
     count: async ({ where = {} } = {}) => (await model.findAll({ where })).length,
   };
 
