@@ -92,10 +92,15 @@ app.get('/health', (req, res) => {
 app.use((req, res, next) => {
   if (!noDatabaseMode) return next();
 
-  const publicRoutes = ['/', '/login', '/client', '/lookup', '/request-certificate', '/track-request', '/health'];
+  const publicRoutes = ['/', '/login', '/client', '/lookup', '/request-certificate', '/track-request', '/health', '/dashboard', '/client-dashboard', '/birth', '/marriage', '/death', '/residency', '/requests', '/admin'];
   const isPublicRoute = publicRoutes.includes(req.path) || req.path.startsWith('/public') || req.path.startsWith('/images') || req.path.startsWith('/styles') || req.path.startsWith('/js');
 
   if (isPublicRoute) return next();
+
+  // Allow auth API routes even in no-database mode
+  const authApiRoutes = ['/api/users/login', '/api/users/register-client', '/api/users/logout', '/api/users/forgotPassword', '/api/users/resetPassword'];
+  const isAuthRoute = authApiRoutes.some(route => req.path.startsWith(route));
+  if (isAuthRoute) return next();
 
   if (req.path.startsWith('/api')) {
     return res.status(503).json({
