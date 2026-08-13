@@ -102,13 +102,22 @@ app.use((err, req, res, next) => {
 });
 
 // Database connection and sync
-db.sequelize
-  .authenticate()
-  .then(() => {
-    console.log('✅ Database connected successfully');
-  })
-  .catch((err) => {
-    console.error('❌ Unable to connect to the database:', err);
-  });
+if (
+  process.env.DB_HOST &&
+  process.env.DB_NAME &&
+  process.env.DB_USER &&
+  process.env.DB_PASSWORD !== undefined
+) {
+  db.sequelize
+    .authenticate()
+    .then(() => {
+      console.log('✅ Database connected successfully');
+    })
+    .catch((err) => {
+      console.error('❌ Unable to connect to the database:', err.message || err);
+    });
+} else {
+  console.warn('⚠️ Database config is not set. Skipping DB connection for this serverless environment.');
+}
 
 module.exports = app;
