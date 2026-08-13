@@ -55,6 +55,11 @@ function buildLocalModel(modelName) {
       return record;
     };
 
+    record.correctPassword = async function (candidatePassword) {
+      const bcrypt = require('bcryptjs');
+      return await bcrypt.compare(candidatePassword, this.password);
+    };
+
     return record;
   }
 
